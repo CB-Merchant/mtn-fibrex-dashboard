@@ -1,0 +1,296 @@
+
+=========================================================
+  Huawei FibreX box — reading the data counters properly
+=========================================================
+
+Signing in as "root" ...
+Signed in. Reading the counter pages in full ...
+
+  layout learned from /html/bbsp/common/wan_list_info.asp: domain, BytesSent, BytesReceived, PacketsSent, PacketsReceived, UnicastSent, UnicastReceived, MulticastSent, MulticastReceived, BroadcastSent, BroadcastReceived, BytesSentHigh, BytesSentLow, BytesReceivedHigh, BytesReceivedLow
+  read  /html/bbsp/common/wan_list_info.asp  (46233 characters)
+        byte-named fields: 12   real numbers found: 0   full records: 0
+
+  ---- /html/bbsp/common/wan_list_info.asp ----
+  Every byte/octet field on the page:
+    BytesSent = (empty)
+    BytesReceived = (empty)
+    BytesSentHigh = (empty)
+    BytesSentLow = (empty)
+    BytesReceivedHigh = (empty)
+    BytesReceivedLow = (empty)
+    BytesSent = BytesSent
+    BytesReceived = BytesReceived
+    BytesSentHigh = BytesSentHigh
+    BytesSentLow = BytesSentLow
+    BytesReceivedHigh = BytesReceivedHigh
+    BytesReceivedLow = BytesReceivedLow
+  Values handed to the box's own statistics constructor:
+    (AuthState)
+    (1)
+    (domain, BytesSent, BytesReceived, PacketsSent, PacketsReceived,UnicastSent,UnicastReceived,MulticastSent,MulticastReceived,BroadcastSent,BroadcastReceived,BytesSentHigh,BytesSentLow,BytesReceivedHigh,BytesReceivedLow)
+  Context 1: = ""; this.TriggerMode = "AlwaysOn"; this.Uptime = 0; this.IPv4DNSOverrideSwitch = "0"; this.X_HW_LowerLayers = ""; this.EnableOption60 = "0"; this.X_HW_IPoEName =""; this.X_HW_IPoEPassword= ""; this.IPv4EnableMulticast= "1"; this.X_HW_DscpToPbitTbl= ""; this.BytesSent = ""; this.BytesReceived = ""; this.PacketsSent = ""; this.PacketsReceived = ""; this.UnicastSent = ""; this.UnicastReceived = ""; this.MulticastSent = ""; this.MulticastReceived = ""; this.BroadcastSent = ""; this.BroadcastReceived = ""; this.X_HW_IGMPEnable = "0"; this.X_HW_SpeedLimit_UP = ""; this.X_HW_SpeedLimit_DOWN = ""; this.EnableUnnumbered = ""; this.UnnumberedIpAddress = ""; this.UnnumberedSubnetM
+  Context 2: is.X_HW_IGMPEnable = "0"; this.X_HW_SpeedLimit_UP = ""; this.X_HW_SpeedLimit_DOWN = ""; this.EnableUnnumbered = ""; this.UnnumberedIpAddress = ""; this.UnnumberedSubnetMask = ""; this.Option60_enable = ""; this.Option60_User = ""; this.Option60_Pwd = ""; this.BytesSentHigh = ""; this.BytesSentLow = ""; this.BytesReceivedHigh = ""; this.BytesReceivedLow = ""; this.IPForwardModeEnabled = "0"; if(IsXdProduct()) { this.EnableVlan = "0"; if ((CfgModeWord.toUpperCase() == "DNZTELECOM2WIFI") || (SupportTtnet())) { this.UserName = ""; this.Password = ""; } else if(1 == IsTedata) { this.UserName = "00000"; this.Password = ""; } else { this.UserName = "pppoe1@dsl_dom201"; this.Pass
+  Context 3: ationEnabled = X_HW_E8C_IPv6PrefixDelegationEnabled; } function UnnumberdIPInfoClass(domain, Enable, IPAddress, SubnetMask) { this.domain = domain; this.Enable = Enable; this.IPAddress = IPAddress; this.SubnetMask = SubnetMask; } function WaninfoStats(domain, BytesSent, BytesReceived, PacketsSent, PacketsReceived,UnicastSent,UnicastReceived,MulticastSent,MulticastReceived,BroadcastSent,BroadcastReceived,BytesSentHigh,BytesSentLow,BytesReceivedHigh,BytesReceivedLow) { this.domain = domain; this.BytesSent = BytesSent; this.BytesReceived = BytesReceived; this.PacketsSent = PacketsSent; this.PacketsReceived = PacketsReceived; this.UnicastSent = UnicastSent; this.UnicastReceiv
+  Context 4: ved = PacketsReceived; this.UnicastSent = UnicastSent; this.UnicastReceived = UnicastReceived; this.MulticastSent = MulticastSent; this.MulticastReceived = MulticastReceived; this.BroadcastSent = BroadcastSent; this.BroadcastReceived = BroadcastReceived; this.BytesSentHigh = BytesSentHigh; this.BytesSentLow = BytesSentLow; this.BytesReceivedHigh = BytesReceivedHigh; this.BytesReceivedLow = BytesReceivedLow; } WanInfoInst.prototype.clone = function() { var newObj = new WanInfoInst(); for(emplement in this) { newObj[emplement] = this[emplement]; } return newObj; } function GetProtocolType(IPv4Enable, IPv6Enable) { if (IPv4Enable == "1" && IPv6Enable == "1") { return "IPv4/I
+  read  /html/bbsp/common/get_wan_list_pppwanstat.asp  (231 characters)
+        byte-named fields: 0   real numbers found: 7   full records: 1
+
+  ---- /html/bbsp/common/get_wan_list_pppwanstat.asp ----
+  Whole page, exactly as it came back:
+    function() { return new Array(new WaninfoStats("InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Stats","896319260","1689502191","2636353","12140647","2636351","12030504","0","0","2","110143"),null); }
+  Records, with the layout applied so each value has its name:
+    connection: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Stats
+      BytesSent = 896319260   (about 0.83 GB)
+      BytesReceived = 1689502191   (about 1.57 GB)
+      PacketsSent = 2636353
+      PacketsReceived = 12140647
+      UnicastSent = 2636351
+      UnicastReceived = 12030504
+      MulticastSent = 0
+      MulticastReceived = 0
+      BroadcastSent = 2
+      BroadcastReceived = 110143
+  Values handed to the box's own statistics constructor:
+    ("InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Stats","896319260","1689502191","2636353","12140647","2636351","12030504","0","0","2","110143")
+  Long numbers found, with the words just before them:
+    896319260   <-- ...ayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Stats","
+    1689502191   <-- ...Device.1.WANConnectionDevice.1.WANPPPConnection.1.Stats","896319260","
+    12140647   <-- ...evice.1.WANPPPConnection.1.Stats","896319260","1689502191","2636353","
+    12030504   <-- ...ion.1.Stats","896319260","1689502191","2636353","12140647","2636351","
+  read  /html/bbsp/common/get_wan_list_ipwanstat.asp  (42 characters)
+        byte-named fields: 0   real numbers found: 0   full records: 0
+
+  ---- /html/bbsp/common/get_wan_list_ipwanstat.asp ----
+  Whole page, exactly as it came back:
+    function() { return new Array(null); }
+  read  /html/bbsp/common/wan_list.asp  (74157 characters)
+        byte-named fields: 2   real numbers found: 0   full records: 0
+
+  ---- /html/bbsp/common/wan_list.asp ----
+  Every byte/octet field on the page:
+    BytesSent = WanStats[i].BytesSent
+    BytesReceived = WanStats[i].BytesReceived
+  Values handed to the box's own statistics constructor:
+    ()
+    ()
+    ()
+    ()
+    ()
+  Long numbers found, with the words just before them:
+    798977853007   <-- ...ction() { var requestUrl = ""; var Onttoken = "***hidden***", async : false, cache : false, data : requestUrl, url : "del.cgi?" + "&RequestFile=html/ipv6/not_find_file.asp" }); } } function radioEvt() { $(".subRadioWan").trigger("evtRadioWan"); } var Instance_RadioWan = new RadioWanLoader(); var timeWanStat; function WanStatsLoader() { this.WanEthIPStats = []; this.WanEthPPStats = []; this.ipStatsReady = false; this.ppStatsReady = false; $.ajax({ context : this, type : "GET", async : true, cache : false, timeout : 10000, url : "/html/bbsp/common/get_wan_list_ipwanstat.asp", beforeSend : function(xhr) { this.ipStatsReady = false; }, success : function(data) { this.WanEthIPStats = dealDataWithFun(data); this.ipStatsReady = true; if
+  Context 2: end : function(xhr) { this.ppStatsReady = false; }, success : function(data) { this.WanEthPPStats = dealDataWithFun(data); this.ppStatsReady = true; if (this.ipStatsReady && this.ppStatsReady) { this.Validate(); } } }); this.WanListOverlay = function(WanList, WanStats) { if (WanstatistcsRead != 1) { return; } for (var i = 0; i < WanStats.length - 1; i++) { for (var j = 0; j < WanList.length; j++) { if (WanStats[i].domain.indexOf(WanList[j].domain) < 0) { continue; } WanList[j].BytesSent = WanStats[i].BytesSent; WanList[j].BytesReceived = WanStats[i].BytesReceived; WanList[j].PacketsSent = WanStats[i].PacketsSent; WanList[j].PacketsReceived = WanStats[i].PacketsReceived; W
+  Context 3: ats.length - 1; i++) { for (var j = 0; j < WanList.length; j++) { if (WanStats[i].domain.indexOf(WanList[j].domain) < 0) { continue; } WanList[j].BytesSent = WanStats[i].BytesSent; WanList[j].BytesReceived = WanStats[i].BytesReceived; WanList[j].PacketsSent = WanStats[i].PacketsSent; WanList[j].PacketsReceived = WanStats[i].PacketsReceived; WanList[j].UnicastSent = WanStats[i].UnicastSent; WanList[j].UnicastReceived = WanStats[i].UnicastReceived; WanList[j].MulticastSent = WanStats[i].MulticastSent; WanList[j].MulticastReceived = WanStats[i].MulticastReceived; WanList[j].BroadcastSent = WanStats[i].BroadcastSent; WanList[j].BroadcastReceived = WanStats[i].BroadcastReceive
+  Context 4: eceived; WanList[j].UnicastSent = WanStats[i].UnicastSent; WanList[j].UnicastReceived = WanStats[i].UnicastReceived; WanList[j].MulticastSent = WanStats[i].MulticastSent; WanList[j].MulticastReceived = WanStats[i].MulticastReceived; WanList[j].BroadcastSent = WanStats[i].BroadcastSent; WanList[j].BroadcastReceived = WanStats[i].BroadcastReceived; } } } this.WanListOverlayAll = function(WanList) { this.WanListOverlay(WanList, this.WanEthIPStats); this.WanListOverlay(WanList, this.WanEthPPStats); } this.Validate = function() { timeWanStat = setInterval("wanStatsEvt()", 300); } } function wanStatsEvt() { $(".subWanStats").trigger("evtWanStats"); } var Instance_WanStats = new
+  Context 5: his.WanListOverlayAll = function(WanList) { this.WanListOverlay(WanList, this.WanEthIPStats); this.WanListOverlay(WanList, this.WanEthPPStats); } this.Validate = function() { timeWanStat = setInterval("wanStatsEvt()", 300); } } function wanStatsEvt() { $(".subWanStats").trigger("evtWanStats"); } var Instance_WanStats = new WanStatsLoader(); var RadioWanBackup = ""; var RadioWanProfile = ""; function getWanBackupInfo() { var xmlhttp = CreateXMLHttp(); xmlhttp.onreadystatechange = function(){ if (xmlhttp.readyState == 4) { if (xmlhttp.status == 200) { RadioWanBackup = dealDataWithFun(xmlhttp.responseText); } } } xmlhttp.open('POST','/html/bbsp/common/ltebackupinfo.asp', fal
+  Context 6: { clearInterval(timesV6RD); Instance_v6RDTunnel.WanListOverlayAll(WanList); __RenderPage(event); }); $(".subRadioWan").on("evtRadioWan", function(event) { clearInterval(timesRadio); Instance_RadioWan.WanListOverlayAll(WanList); __RenderPage(event); }); $(".subWanStats").on("evtWanStats", function(event) { clearInterval(timeWanStat); Instance_WanStats.WanListOverlayAll(WanList); __RenderPage(event); }); $(".subWANAccessType").on("evtWANAccessType", function(event) { __RenderPage(event); }); $(".subIPv6AddressList").on("evtIPv6AddressList", function(event) { __RenderPage(event); }); $(".subIPv6PrefixList").on("evtIPv6PrefixList", function(event) { __RenderPage(event); }); $
+  read  /html/bbsp/common/wan_list_cache_wan.asp  (830 characters)
+        byte-named fields: 0   real numbers found: 0   full records: 1
+
+  ---- /html/bbsp/common/wan_list_cache_wan.asp ----
+  Whole page, exactly as it came back:
+    function() { var obj = {}; obj.IPWanList = new Array(null); obj.PPPWanList = new Array(new WanPPP("InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1","0","0","AlwaysOn","4C\x3aD0\x3aDD\x3a0A\x3a1E\x3a60","Connected","ERROR\x5fNONE","","NCE\x5fHOME\x5fUPublic\x5fIP\x5f431","1","","","Connected","IP\x5fRouted","10\x2e88\x2e186\x2e12","10\x2e88\x2e0\x2e1","1","0","102\x2e91\x2e142\x2e7\x2c102\x2e92\x2e36\x2e7","FN210882","\x2a\x2a\x2asensitive\x20data\x20replaced\x2a\x2a\x2a","AlwaysOn","4294967295","431","4294967295","0","0","INTERNET","","0","180","1","1","0","0","Specified","0","1492","T0118\x5fABJ\x5fBRAS\x5fNE40E\x2dX8A\x5f1","DetectBidirectionally","110095","0","","25386","0","","","","","0","0","0","0","0","","0","0",""),null); obj.unnumberdIPInfo = new Array(null); return obj; }
+  Records, with the layout applied so each value has its name:
+    connection: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1
+      BytesSent = 0
+      BytesReceived = 0
+      PacketsSent = AlwaysOn
+      PacketsReceived = 4C\x3aD0\x3aDD\x3a0A\x3a1E\x3a60
+      UnicastSent = Connected
+      UnicastReceived = ERROR\x5fNONE
+      MulticastSent = (empty)
+      MulticastReceived = NCE\x5fHOME\x5fUPublic\x5fIP\x5f431
+      BroadcastSent = 1
+      BroadcastReceived = (empty)
+      BytesSentHigh = (empty)
+      BytesSentLow = Connected
+      BytesReceivedHigh = IP\x5fRouted
+      BytesReceivedLow = 10\x2e88\x2e186\x2e12
+      value 16 = 10\x2e88\x2e0\x2e1
+      value 17 = 1
+      value 18 = 0
+      value 19 = 102\x2e91\x2e142\x2e7\x2c102\x2e92\x2e36\x2e7
+      value 20 = FN210882
+      value 21 = \x2a\x2a\x2asensitive\x20data\x20replaced\x2a\x2a\x2a
+      value 22 = AlwaysOn
+      value 23 = 4294967295
+      value 24 = 431
+      value 25 = 4294967295
+      value 26 = 0
+      value 27 = 0
+      value 28 = INTERNET
+      value 29 = (empty)
+      value 30 = 0
+      value 31 = 180
+      value 32 = 1
+      value 33 = 1
+      value 34 = 0
+      value 35 = 0
+      value 36 = Specified
+      value 37 = 0
+      value 38 = 1492
+      value 39 = T0118\x5fABJ\x5fBRAS\x5fNE40E\x2dX8A\x5f1
+      value 40 = DetectBidirectionally
+      value 41 = 110095
+      value 42 = 0
+      value 43 = (empty)
+      value 44 = 25386
+      value 45 = 0
+      value 46 = (empty)
+      value 47 = (empty)
+      value 48 = (empty)
+      value 49 = (empty)
+      value 50 = 0
+      value 51 = 0
+      value 52 = 0
+      value 53 = 0
+      value 54 = 0
+      value 55 = (empty)
+      value 56 = 0
+      value 57 = 0
+      value 58 = (empty)
+  Long numbers found, with the words just before them:
+    4294967295   <-- ...","\x2a\x2a\x2asensitive\x20data\x20replaced\x2a\x2a\x2a","AlwaysOn","
+    4294967295   <-- ...itive\x20data\x20replaced\x2a\x2a\x2a","AlwaysOn","4294967295","431","
+  read  /html/bbsp/common/wan_check.asp  (64546 characters)
+        byte-named fields: 0   real numbers found: 0   full records: 1
+
+  ---- /html/bbsp/common/wan_check.asp ----
+  Records, with the layout applied so each value has its name:
+    connection: InternetGatewayDevice.WANDevice.2.WANConnectionDevice.1.WANPPPConnection.1
+      BytesSent = InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANP
+      BytesReceived = InternetGatewayDevice.WANDevice.2.WANConnectionDevice.1.WANI
+      PacketsSent = InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANI
+  read  /html/bbsp/wan/wan.asp  (209866 characters)
+        byte-named fields: 0   real numbers found: 0   full records: 5
+
+  ---- /html/bbsp/wan/wan.asp ----
+  Records, with the layout applied so each value has its name:
+    connection: InternetGatewayDevice.X_HW_DHCPSLVSERVER
+      BytesSent = 192\x2e168\x2e2\x2e2
+      BytesReceived = 192\x2e168\x2e2\x2e254
+      PacketsSent = 86400
+      PacketsReceived = 0
+      UnicastSent = MSFT\x205\x2e0
+      UnicastReceived = (empty)
+      MulticastSent = 1
+      MulticastReceived = (empty)
+    connection: InternetGatewayDevice.X_HW_DHCPSLVSERVER
+      BytesSent = 192\x2e168\x2e2\x2e2
+      BytesReceived = 192\x2e168\x2e2\x2e254
+      PacketsSent = 86400
+      PacketsReceived = 0
+      UnicastSent = MSFT\x205\x2e0
+      UnicastReceived = (empty)
+      MulticastSent = (empty)
+      MulticastReceived = 1
+      BroadcastSent = (empty)
+    connection: InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1
+      BytesSent = 1
+      BytesReceived = 192\x2e168\x2e100\x2e1
+      PacketsSent = 255\x2e255\x2e255\x2e0
+    connection: InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.2
+      BytesSent = 1
+      BytesReceived = 192\x2e168\x2e2\x2e1
+      PacketsSent = 255\x2e255\x2e255\x2e0
+    connection: InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.2
+      BytesSent = (empty)
+      BytesReceived = (empty)
+      PacketsSent = (empty)
+  Values handed to the box's own statistics constructor:
+    ()
+    ()
+    ()
+    ()
+    ()
+    ()
+    ()
+    ()
+  Long numbers found, with the words just before them:
+    41553184798   <-- ...l="stylesheet" href="../../../resource/common/style.css?49bd6ca47519dc
+    41553184798   <-- ...el="stylesheet" href='../../../Cuscss/english/frame.css?49bd6ca47519dc
+    41553184798   <-- ...rel="stylesheet" href="../../../resource/common/wan.css?49bd6ca47519dc
+    41553184798   <-- ..."JavaScript" src="../../../resource/english/ampdes.html?49bd6ca47519dc
+    41553184798   <-- ...uage="JavaScript" src="../../../resource/common/util.js?49bd6ca47519dc
+    41553184798   <-- ...ge="JavaScript" src="../../../resource/common/common.js?49bd6ca47519dc
+    415531847981770253252   <-- ...nguage="JavaScript" src="../../../resource/lancutdes.js?49bd6ca47519dc
+    41553184798   <-- ...anguage="JavaScript" src='../../../Cusjs/InitFormCus.js?49bd6ca47519dc
+    41553184798   <-- ... language="javascript" src="../common/wan_list_info.asp?49bd6ca47519dc
+    41553184798   <-- ...t language="javascript" src="../common/wan_settings.asp?49bd6ca47519dc
+    41553184798   <-- ...language="javascript" src="../common/wan_servicelist.js?49bd6ca47519dc
+    41553184798   <-- ...nguage="javascript" src="../../amp/common/wlan_list.asp?49bd6ca47519dc
+    41553184798   <-- ...p"></script> <script language="JavaScript" src="wan.cus?49bd6ca47519dc
+    4294967295   <-- ... += '&GROUP_a_y.ConnectionType=IP_Routed&GROUP_a_y.X_HW_MultiCastVLAN=
+  Context 1:  == CfgModeWord.toUpperCase())) { selectLine("wanInstTable_record_0"); } </script> <script language="javascript" src="../common/wanipv6state.asp"></script> <div class="subWanListPolicyRoute subWanListIPVersion subIspWlan subDSLite subV6RDTunnel subRadioWan subWanStats subWANAccessType"> <script type="text/javascript"> function RenderPage(event) { if (IsXdProduct() && (event.type == "evtRadioWan")) { Instance_RadioWan.WanListOverlay(GetWanList()); } if ((event.type === 'evtV6RDTunnel') && (typeof(selctIndex) != "undefined") && (selctIndex > -1)) { setControl(selctIndex); } } LazyLoad(); $(document).ready(function() { if (window.parent.startWanStateTimer) { window.parent.st
+  read  /html/ssmp/deviceinfo/deviceinfo.asp  (57374 characters)
+        byte-named fields: 0   real numbers found: 0   full records: 1
+
+  ---- /html/ssmp/deviceinfo/deviceinfo.asp ----
+  Records, with the layout applied so each value has its name:
+    connection: InternetGatewayDevice.DeviceInfo
+      BytesSent = 48575443432C5FB6
+      BytesReceived = 47D8\x2eD
+      PacketsSent = V5R024C00S106
+      PacketsReceived = HG8145X7\x2d10
+      UnicastSent = HWTC
+      UnicastReceived = 2025\x2d03\x2d21\x5f19\x3a48\x3a12\x20
+      MulticastSent = 4C\x3aD0\x3aDD\x3a0A\x3a1E\x3a5F
+      MulticastReceived = OptiXstar\x20HG8145X7\x2d10\x20GPON\x20Terminal\x20\x28CLASS
+      BroadcastSent = 2150088856HYR9001173\x2eC402
+      BroadcastReceived = (empty)
+      BytesSentHigh = (empty)
+      BytesSentLow = 0
+      BytesReceivedHigh = 0
+      BytesReceivedLow = 4C\x3aD0\x3aDD\x3a0A\x3a1E\x3a60\x0d\x0a4C\x3aD0\x3aDD\x3a0A
+  Values handed to the box's own statistics constructor:
+    ()
+    ()
+    ()
+    ()
+    ()
+    ()
+    ()
+    ()
+  Long numbers found, with the words just before them:
+    41553184798   <-- ...uage="JavaScript" src="../../../resource/common/util.js?49bd6ca47519dc
+    41553184798   <-- ...="JavaScript" src="../../../resource/english/ssmpdes.js?49bd6ca47519dc
+    41553184798   <-- ...anguage="JavaScript" src='../../../Cusjs/InitFormCus.js?49bd6ca47519dc
+    41553184798   <-- ..."JavaScript" src="../../../resource/common/InitForm.asp?49bd6ca47519dc
+    41553184798   <-- ...l="stylesheet" href='../../../resource/common/style.css?49bd6ca47519dc
+    41553184798   <-- ...el="stylesheet" href='../../../Cuscss/english/frame.css?49bd6ca47519dc
+    41553184798   <-- ..."JavaScript" src="../../../resource/english/ampdes.html?49bd6ca47519dc
+    41553184798   <-- ...javascript" src="../../../resource/common/jquery.min.js?49bd6ca47519dc
+    41553184798   <-- ...tyle> <script language="JavaScript" src="deviceinfo.cus?49bd6ca47519dc
+    7206732538   <-- ...***hidden-long-code***,09d8dd4aa65ea4f41ed29b2bccd2e
+    48575443432   <-- ...nfos = new Array(new stDeviceInfo("InternetGatewayDevice.DeviceInfo","
+    2150088856   <-- ...7\x2d10\x20GPON\x20Terminal\x20\x28CLASS\x20B\x2b\x2fPRODUCT\x20ID\x3a
+    2150088856   <-- ...\x20\x28CLASS\x20B\x2b\x2fPRODUCT\x20ID\x3a2150088856HYR9001173\x29","
+    00000000000000000000   <-- ...tById('td17_2Colleft').innerHTML = DevInfoDes['s1613']; var strtmp = "
+  404  /html/bbsp/common/get_wan_list_wanstats.asp
+  404  /html/bbsp/common/get_wan_list_stats.asp
+  404  /html/bbsp/common/wan_list_stats.asp
+  404  /html/bbsp/common/wan_list_cache_wanstats.asp
+  404  /html/bbsp/common/wanstats.asp
+  404  /html/bbsp/common/wan_stats.asp
+  404  /html/bbsp/common/get_wan_statistics.asp
+  404  /html/bbsp/common/get_wanstats.asp
+  404  /html/ssmp/wanstat/wanstat.asp
+
+Following 1 page(s) named beside the counters ...
+  404  /html/bbsp/wan/../common/wanipv6state.asp
+
+=========================================================
+  THE ANSWER
+=========================================================
+YES. Your box publishes running data totals, with names attached.
+
+That is everything the dashboard needs: read the total now, read it
+again later, subtract, and you have real usage — no guessing.
+
+  On /html/bbsp/common/get_wan_list_pppwanstat.asp:
+    connection InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Stats
+      BytesSent = 896319260   (about 0.83 GB)
+      BytesReceived = 1689502191   (about 1.57 GB)
+      PacketsSent = 2636353
+      PacketsReceived = 12140647
+
+Signed out of the router again.

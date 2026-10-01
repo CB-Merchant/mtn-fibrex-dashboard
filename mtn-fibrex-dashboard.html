@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MTN FibreX — Broadband Dashboard</title>
+
+<!-- Fonts (optional: if the internet is blocked the page falls back to normal system fonts and still works fully) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    color-scheme: dark;
+    --ink:#09090B; --panel:#141417; --panel-2:#1C1C21;
+    --line:rgba(255,255,255,0.08); --line-strong:rgba(255,255,255,0.14);
+    --text:#FAFAF7; --muted:#A1A1AA;
+    --yellow:#FFCC00; --amber:#FF9E1B; --good:#34D399; --bad:#FB6A6A; --info:#7FB8FF;
+    --radius:18px; --gap:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 78% -8%, rgba(255,158,27,0.10), transparent 60%),
+      radial-gradient(900px 500px at 8% 0%, rgba(255,204,0,0.06), transparent 55%),
+      var(--ink);
+    color:var(--text);
+    font-family:'IBM Plex Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.5; min-height:100vh;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 22px 60px;}
+
+  /* Top bar */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .mtn-logo{background:var(--yellow);color:#000;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:.5px;font-size:15px;padding:7px 12px;border-radius:999px;line-height:1;box-shadow:0 0 0 3px rgba(255,204,0,0.14);}
+  .wordmark{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;letter-spacing:.3px;}
+  .wordmark .x{color:var(--yellow);font-style:italic;font-weight:700;}
+  .topbar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .acct{display:flex;align-items:center;gap:10px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);}
+  .acct .avatar{width:26px;height:26px;border-radius:50%;background:var(--yellow);color:#000;font-weight:700;display:grid;place-items:center;font-size:12px;font-family:'Space Grotesk',sans-serif;}
+  .acct .who{font-size:13px;line-height:1.15;}
+  .acct .who small{display:block;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;}
+  .sample-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--amber);border:1px dashed rgba(255,158,27,0.5);background:rgba(255,158,27,0.07);padding:6px 10px;border-radius:8px;}
+
+  /* Hero */
+  .hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:calc(var(--radius) + 4px);background:linear-gradient(180deg,#16161a,#0f0f12);padding:30px 30px 28px;margin-bottom:var(--gap);}
+  .fibre{position:absolute;inset:0;pointer-events:none;opacity:.8;}
+  .fibre span{position:absolute;height:1.5px;left:-40%;width:40%;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(255,204,0,0) 10%,var(--yellow) 55%,rgba(255,158,27,0.9) 75%,transparent);filter:drop-shadow(0 0 6px rgba(255,204,0,0.5));animation:flow linear infinite;}
+  .fibre span:nth-child(1){top:22%;animation-duration:5.5s;animation-delay:0s;opacity:.9;}
+  .fibre span:nth-child(2){top:41%;width:55%;animation-duration:7s;animation-delay:1.2s;opacity:.6;}
+  .fibre span:nth-child(3){top:63%;width:32%;animation-duration:4.6s;animation-delay:.6s;opacity:.75;}
+  .fibre span:nth-child(4){top:80%;width:48%;animation-duration:8s;animation-delay:2.1s;opacity:.4;}
+  @keyframes flow{from{transform:translateX(0);}to{transform:translateX(360%);}}
+  .hero-grid{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;}
+  .status-line{display:flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted);margin-bottom:14px;}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--good);animation:pulse 2.2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,0.5);}70%{box-shadow:0 0 0 8px rgba(52,211,153,0);}100%{box-shadow:0 0 0 0 rgba(52,211,153,0);}}
+  .status-line b{color:var(--text);font-weight:600;}
+  .big-label{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .big-number{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(52px,9vw,86px);line-height:.95;letter-spacing:-1.5px;}
+  .big-number .unit{font-size:.34em;color:var(--yellow);margin-left:8px;letter-spacing:0;}
+  .runout{margin-top:6px;font-size:15px;color:var(--muted);}
+  .runout b{color:var(--amber);font-weight:600;}
+  /* Honest small print under the headline number: what the total is missing,
+     what it is a floor for, and when it mixes two different services. */
+  .caveat{margin-top:10px;font-size:12.5px;line-height:1.55;color:var(--muted);
+    border-left:2px solid var(--amber);padding:6px 0 6px 10px;opacity:.95;}
+  .caveat b{color:var(--text);font-weight:600;}
+  .usebar-wrap{margin-top:22px;}
+  .usebar{position:relative;height:12px;border-radius:999px;background:var(--panel-2);overflow:hidden;border:1px solid var(--line);}
+  .usebar .fill{position:absolute;inset:0;width:0;background:linear-gradient(90deg,var(--yellow),var(--amber));border-radius:999px;transition:width 1.4s cubic-bezier(.16,1,.3,1);}
+  .usebar-meta{display:flex;justify-content:space-between;margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);}
+  .hero-side{border-left:1px solid var(--line);padding-left:26px;}
+  .hero-side h3{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:0 0 14px;}
+  .mini-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px dashed var(--line);}
+  .mini-row:last-child{border-bottom:0;}
+  .mini-row .k{font-size:14px;color:var(--muted);}
+  .mini-row .v{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;}
+
+  /* Grid + cards */
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--gap);}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden;transition:border-color .25s ease;}
+  .card:hover{border-color:var(--line-strong);}
+  .kpi{grid-column:span 4;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px;}
+  .kpi .val{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:34px;line-height:1;margin-top:12px;letter-spacing:-.5px;}
+  .kpi .val small{font-size:15px;color:var(--muted);font-weight:500;margin-left:3px;}
+  .kpi .sub{font-size:12.5px;color:var(--muted);margin-top:7px;}
+  .up{color:var(--good);} .down{color:var(--bad);}
+
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;}
+  .panel-head h2{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;margin:0;letter-spacing:-.2px;}
+  .panel-head .note{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);}
+  .ph-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+  .chart-box{position:relative;height:230px;}
+  .chart-box>div{width:100%;height:100%;}
+  .col-7{grid-column:span 7;} .col-5{grid-column:span 5;} .col-12{grid-column:span 12;}
+
+  /* Live / Manual / Sample source tags */
+  .src{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid transparent;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;line-height:1;}
+  .src::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;}
+  .src-sample{color:var(--amber);border-color:rgba(255,158,27,0.45);background:rgba(255,158,27,0.08);}
+  .src-manual{color:var(--info);border-color:rgba(127,184,255,0.42);background:rgba(127,184,255,0.09);}
+  .src-live{color:var(--good);border-color:rgba(52,211,153,0.42);background:rgba(52,211,153,0.09);}
+  .hero .src{position:absolute;top:20px;right:20px;z-index:3;}
+  .kpi .src{position:absolute;top:14px;right:14px;}
+
+  /* Legends + readouts */
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);margin-bottom:10px;}
+  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1px;}
+  .speed-now{display:flex;gap:26px;margin-bottom:10px;}
+  .speed-now b{font-family:'Space Grotesk',sans-serif;font-size:27px;font-weight:700;letter-spacing:-.5px;}
+  .speed-now small{color:var(--muted);font-size:12px;margin-left:2px;}
+  .speed-now .arw{font-size:17px;color:var(--muted);margin-right:3px;}
+  .speed-now .arw.dn{color:var(--yellow);}
+
+  /* Monthly */
+  .month-pick{background:var(--panel-2);color:var(--text);border:1px solid var(--line-strong);border-radius:8px;padding:6px 10px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;}
+  .month-readout{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+  .month-readout .big{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:38px;line-height:1;letter-spacing:-1px;}
+  .month-readout .gblabel{color:var(--yellow);font-family:'IBM Plex Mono',monospace;font-size:14px;align-self:flex-end;margin-bottom:5px;}
+  .month-readout .mnote{margin-left:16px;font-size:12.5px;color:var(--muted);}
+
+  /* Uptime */
+  .uptime-wrap{display:flex;gap:20px;align-items:center;}
+  .ring-box{position:relative;width:150px;height:150px;flex:none;}
+  .ring-center{position:absolute;inset:0;display:grid;place-items:center;text-align:center;}
+  .ring-center .p{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;line-height:1;}
+  .ring-center .l{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.5px;margin-top:3px;}
+  .outages{flex:1;min-width:0;}
+  .outage{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .outage:last-child{border-bottom:0;}
+  .outage .when{color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px;}
+  .pill{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(251,106,106,0.12);color:var(--bad);}
+  .pill.pill-ok{background:rgba(52,211,153,0.14);color:var(--good);}
+  .pill.pill-live{background:rgba(255,158,27,0.16);color:var(--amber);}
+  .outage.outage-none .pill{background:rgba(52,211,153,0.14);color:var(--good);}
+
+  /* Devices */
+  .dev{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .dev:last-child{border-bottom:0;}
+  .dev .ico{width:34px;height:34px;border-radius:9px;background:var(--panel-2);display:grid;place-items:center;font-size:16px;flex:none;}
+  .dev .name{flex:1;min-width:0;}
+  .dev .name b{font-weight:600;font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dev .name span{font-size:12px;color:var(--muted);}
+  .dev .bar{width:90px;flex:none;}
+  .dev .bar .track{height:6px;border-radius:999px;background:var(--panel-2);overflow:hidden;}
+  .dev .bar .fill{height:100%;background:linear-gradient(90deg,var(--yellow),var(--amber));border-radius:999px;}
+  .dev .gb{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);width:60px;text-align:right;flex:none;}
+
+  /* Plan */
+  .plan-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .plan-cell .k{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);}
+  .plan-cell .v{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;margin-top:6px;}
+  .plan-cell .v .tag{font-size:11px;font-family:'IBM Plex Mono',monospace;padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:middle;}
+  .tag-off{background:rgba(251,106,106,0.12);color:var(--bad);}
+  .tag-on{background:rgba(52,211,153,0.14);color:var(--good);}
+
+  footer{margin-top:34px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7;}
+  footer .demo{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--amber);}
+  footer .router-line{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);margin-top:6px;}
+
+  /* Settings button */
+  .settings-btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;transition:border-color .2s,background .2s;}
+  .settings-btn:hover{border-color:var(--line-strong);background:var(--panel-2);}
+  .settings-btn .gear{font-size:15px;}
+
+  /* Settings drawer */
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.55);opacity:0;visibility:hidden;transition:opacity .25s;z-index:40;}
+  .drawer-backdrop.open{opacity:1;visibility:visible;}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:430px;max-width:93vw;background:var(--panel);border-left:1px solid var(--line-strong);box-shadow:-20px 0 60px rgba(0,0,0,0.5);transform:translateX(103%);transition:transform .3s cubic-bezier(.16,1,.3,1);z-index:50;display:flex;flex-direction:column;}
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;padding:20px 22px 16px;border-bottom:1px solid var(--line);}
+  .drawer-head h2{font-family:'Space Grotesk',sans-serif;font-size:19px;margin:0;}
+  .drawer-head p{margin:6px 0 0;font-size:12.5px;color:var(--muted);}
+  .drawer-key{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .drawer-close{background:none;border:0;color:var(--muted);font-size:24px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:8px;}
+  .drawer-close:hover{color:var(--text);background:var(--panel-2);}
+  .drawer-body{overflow-y:auto;padding:4px 22px 22px;flex:1;}
+  fieldset.fs{border:0;padding:0;margin:22px 0 0;}
+  fieldset.fs legend{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:0;margin-bottom:2px;display:flex;align-items:center;gap:9px;width:100%;}
+  .field{margin-top:13px;}
+  .field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px;}
+  .field input[type=text],.field input[type=number],.field input[type=date]{width:100%;background:var(--panel-2);border:1px solid var(--line-strong);border-radius:9px;color:var(--text);padding:9px 11px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;}
+  .field input:focus{outline:none;border-color:var(--yellow);}
+  .field input:disabled{opacity:.45;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .check{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--text);cursor:pointer;margin-top:12px;}
+  .check input{width:16px;height:16px;accent-color:var(--yellow);flex:none;}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.5;}
+  .addrow{display:grid;grid-template-columns:1.15fr .85fr auto;gap:9px;align-items:end;}
+  .addrow .field{margin-top:0;}
+  .log-list{margin-top:13px;max-height:200px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;}
+  .log-item{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line);font-size:13px;}
+  .log-item:last-child{border-bottom:0;}
+  .log-item .d{font-family:'IBM Plex Mono',monospace;color:var(--muted);}
+  .log-item .g{font-family:'Space Grotesk',sans-serif;font-weight:600;margin-left:auto;margin-right:4px;}
+  .log-item button{background:none;border:0;color:var(--bad);cursor:pointer;font-size:15px;padding:2px 7px;border-radius:6px;line-height:1;}
+  .log-item button:hover{background:rgba(251,106,106,0.12);}
+  .log-empty{padding:16px;text-align:center;color:var(--muted);font-size:12.5px;}
+  .btn{cursor:pointer;border-radius:10px;padding:10px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:600;border:1px solid var(--line-strong);background:transparent;color:var(--text);transition:background .2s,border-color .2s;}
+  .btn:hover{background:var(--panel-2);}
+  .btn-primary{background:var(--yellow);color:#000;border-color:var(--yellow);}
+  .btn-primary:hover{background:#ffd633;}
+  .btn-add{background:var(--panel-2);}
+  .drawer-actions{display:flex;gap:10px;align-items:center;padding:14px 22px;border-top:1px solid var(--line);background:var(--panel);}
+  .drawer-actions .btn-primary{flex:1;}
+  .save-note{font-size:12.5px;color:var(--good);font-family:'IBM Plex Mono',monospace;opacity:0;transition:opacity .2s;white-space:nowrap;}
+  .save-note.show{opacity:1;}
+
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:22px;}
+    .hero-side{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:20px;}
+    .kpi{grid-column:span 6;}
+    .col-7,.col-5,.col-12{grid-column:span 12;}
+    .plan-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:520px){
+    .wrap{padding:16px 14px 48px;}
+    .uptime-wrap{flex-direction:column;align-items:stretch;}
+    .ring-box{margin:0 auto;}
+    .kpi{grid-column:span 12;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .fibre span{animation:none;opacity:.35;}
+    .dot{animation:none;}
+    .usebar .fill{transition:none;}
+    .drawer{transition:none;}
+  }
+
+  /* Router connect (Sync) UI */
+  .gw-opt{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text);cursor:pointer;padding:9px 11px;border:1px solid var(--line);border-radius:9px;margin-top:8px;background:var(--panel-2);transition:border-color .2s;}
+  .gw-opt:hover{border-color:var(--line-strong);}
+  .gw-opt input{accent-color:var(--yellow);flex:none;width:16px;height:16px;}
+  .gw-opt span{line-height:1.35;}
+  .gw-opt b{font-family:'IBM Plex Mono',monospace;color:var(--text);}
+  .pw-row{display:flex;gap:8px;}
+  .pw-row input{flex:1;}
+  .pw-toggle{padding:9px 12px;font-weight:500;flex:none;}
+  .hint-inline{color:var(--muted);font-size:11px;font-weight:400;}
+  .sync-status{margin-top:13px;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.55;color:var(--muted);min-height:1.3em;}
+  .sync-status.ss-ok{color:var(--good);}
+  .sync-status.ss-err{color:var(--bad);}
+  .sync-status.ss-warn{color:var(--amber);}
+  .sync-status.ss-busy{color:var(--info);}
+  .detected{margin-top:7px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);line-height:1.5;}
+  .live-ind{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.4px;padding:6px 11px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;}
+  .live-ind.on{color:var(--good);border-color:rgba(52,211,153,0.42);background:rgba(52,211,153,0.09);}
+  .live-ind.ready{color:var(--info);border-color:rgba(127,184,255,0.4);background:rgba(127,184,255,0.08);}
+
+  /* Live 5G signal strip (inside the Speed panel; only shows when Live) */
+  .signal-strip{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:0 0 12px;}
+  .sig-chip{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:4px 8px;line-height:1;}
+  .sig-chip i{color:var(--muted);font-style:normal;margin-right:6px;letter-spacing:.3px;}
+  .sig-chip.strong{border-color:rgba(52,211,153,0.4);}
+  /* Live device rows carry no per-device GB (the router doesn't track it) */
+  .dev-hint{font-size:11.5px;color:var(--muted);margin-top:13px;line-height:1.5;padding-top:11px;border-top:1px dashed var(--line);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="mtn-logo">MTN</span>
+      <span class="wordmark">Fibre<span class="x">X</span> · Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <span class="src src-sample" id="topBadge">Sample data</span>
+      <span class="live-ind" id="liveDot" style="display:none">○ Helper</span>
+      <button class="settings-btn" id="openConnect" type="button"><span class="gear">🔌</span> Sync router</button>
+      <button class="settings-btn" id="openSettings" type="button"><span class="gear">⚙</span> Settings</button>
+      <div class="acct"><span class="avatar" id="acctAvatar">AB</span><span class="who"><span id="acctName">Anthony Berchman</span><small id="acctNo">FN210882</small></span></div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="src src-sample" id="srcHero">Sample</span>
+    <div class="fibre" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="hero-grid">
+      <div>
+        <div class="status-line"><span class="dot"></span> <b>You're online</b> · updated <span id="updatedAt">just now</span></div>
+        <div class="big-label" id="bigLabel">Data left this cycle</div>
+        <div class="big-number"><span id="dataLeft">0.0</span><span class="unit">GB</span></div>
+        <div class="runout" id="runout">At your recent pace you'll run out in <b id="daysLeft">—</b> — about <b id="runoutDate">—</b>, <span id="beforeAfter">—</span> your renewal.</div>
+        <div class="caveat" id="usageCaveat" style="display:none"></div>
+        <div class="usebar-wrap" id="usebarWrap">
+          <div class="usebar"><div class="fill" id="useFill"></div></div>
+          <div class="usebar-meta"><span id="usedTxt">—</span><span id="capTxt">—</span></div>
+        </div>
+      </div>
+      <div class="hero-side">
+        <h3>This cycle</h3>
+        <div class="mini-row"><span class="k">Cycle day</span><span class="v" id="cycleDay">—</span></div>
+        <div class="mini-row"><span class="k">Daily average</span><span class="v" id="dailyAvg">—</span></div>
+        <div class="mini-row"><span class="k">Busiest day</span><span class="v" id="busiest">—</span></div>
+        <div class="mini-row"><span class="k">Projected total</span><span class="v" id="projected">—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI ROW -->
+  <div class="grid" style="margin-bottom:var(--gap);">
+    <div class="card kpi">
+      <span class="src src-sample" id="srcUptimeKpi">Sample</span>
+      <div class="eyebrow">▹ Uptime · month</div>
+      <div class="val" id="kpiUptime">99.2<small>%</small></div>
+      <div class="sub" id="kpiUptimeSub">3 outages · 3h 41m down</div>
+    </div>
+    <div class="card kpi">
+      <span class="src src-sample" id="srcDevicesKpi">Sample</span>
+      <div class="eyebrow">▹ Devices online</div>
+      <div class="val" id="kpiDevices">8<small>now</small></div>
+      <div class="sub" id="kpiDevicesSub">2 more than yesterday</div>
+    </div>
+    <div class="card kpi">
+      <span class="src src-sample" id="srcTodayKpi">Sample</span>
+      <div class="eyebrow">▹ Used today</div>
+      <div class="val" id="kpiToday">9.8<small>GB</small></div>
+      <div class="sub" id="kpiTodaySub"><span class="down">▲ 18% vs your daily avg</span></div>
+    </div>
+  </div>
+
+  <!-- DAILY TREND + SPEED -->
+  <div class="grid" style="margin-bottom:var(--gap);">
+    <div class="card col-7">
+      <div class="panel-head"><h2>Daily data usage</h2><span class="ph-right"><span class="src src-sample" id="srcUsage">Sample</span><span class="note" id="usageTrend">last 30 days</span></span></div>
+      <div class="legend"><span><i style="background:linear-gradient(180deg,#FFCC00,#FF9E1B)"></i>Data used each day</span><span><i style="background:#ffffff"></i>7-day trend</span></div>
+      <div class="chart-box"><div id="usageChart"></div></div>
+    </div>
+    <div class="card col-5">
+      <div class="panel-head"><h2>Speed vs your plan</h2><span class="ph-right"><span class="src src-sample" id="srcSpeed">Sample</span><span class="note" id="speedNote">Mbps</span></span></div>
+      <div class="speed-now">
+        <div><span class="arw dn">↓</span><b id="spDown">47.2</b><small>down</small></div>
+        <div><span class="arw">↑</span><b id="spUp">41.0</b><small>up</small></div>
+      </div>
+      <div id="signalStrip" class="signal-strip" style="display:none"></div>
+      <div class="legend"><span><i style="background:#FFCC00"></i>Download</span><span><i style="background:#C9C9D2"></i>Upload</span><span><i style="background:#34D399"></i><span id="spPlanLegend">Plan (50)</span></span></div>
+      <div class="chart-box" style="height:172px"><div id="speedChart"></div></div>
+    </div>
+  </div>
+
+  <!-- MONTHLY + RELIABILITY -->
+  <div class="grid" style="margin-bottom:var(--gap);">
+    <div class="card col-7">
+      <div class="panel-head"><h2>Monthly consumption</h2><span class="ph-right"><span class="src src-sample" id="srcMonthly">Sample</span><select id="monthPick" class="month-pick" aria-label="Pick a month"></select></span></div>
+      <div class="month-readout"><span class="big" id="monthTotal">0</span><span class="gblabel">GB</span><span class="mnote" id="monthNote">—</span></div>
+      <div class="chart-box" style="height:170px"><div id="monthlyChart"></div></div>
+    </div>
+    <div class="card col-5">
+      <div class="panel-head"><h2>Reliability</h2><span class="ph-right"><span class="src src-sample" id="srcReliability">Sample</span><span class="note" id="reliabilityNote">this month</span></span></div>
+      <div class="uptime-wrap">
+        <div class="ring-box"><div id="uptimeRing"></div><div class="ring-center"><div><div class="p" id="uptimePct">99.2%</div><div class="l">UPTIME</div></div></div></div>
+        <div class="outages" id="outageList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEVICES + PLAN -->
+  <div class="grid">
+    <div class="card col-7">
+      <div class="panel-head"><h2>Connected devices</h2><span class="ph-right"><span class="src src-sample" id="srcDevices">Sample</span><span class="note" id="devPanelNote">8 online · usage this cycle</span></span></div>
+      <div id="deviceList"></div>
+    </div>
+    <div class="card col-5">
+      <div class="panel-head"><h2>Your plan &amp; wallet</h2><span class="ph-right"><span class="src src-sample" id="srcPlan">Sample</span><span class="note">your account</span></span></div>
+      <div class="plan-grid" style="grid-template-columns:repeat(2,1fr)">
+        <div class="plan-cell"><div class="k">Plan</div><div class="v" id="planName">FibreX Premium</div></div>
+        <div class="plan-cell"><div class="k">Renews in</div><div class="v" id="planRenew">6 days</div></div>
+        <div class="plan-cell"><div class="k">Monthly price</div><div class="v" id="planPrice">₦24,500</div></div>
+        <div class="plan-cell"><div class="k">Wallet</div><div class="v" id="planWallet">₦0.00 <span class="tag tag-off">auto-off</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="demo" id="footerDemo">▲ Prototype with sample numbers — the charts are drawn by the page itself, so they work with no internet.</div>
+    <div id="footerHint">A first look at your MTN FibreX dashboard. Open <b>⚙ Settings</b> to enter your own details.</div>
+    <div class="router-line" id="routerLine" style="display:none"></div>
+  </footer>
+</div>
+
+<!-- SETTINGS DRAWER -->
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="settingsDrawer" aria-label="Settings">
+  <div class="drawer-head">
+    <div>
+      <h2>Settings</h2>
+      <p>Your details are saved only in this browser, on this device.</p>
+      <div class="drawer-key">
+        <span class="src src-sample">Sample</span>
+        <span class="src src-manual">Manual</span>
+        <span class="src src-live">Live</span>
+      </div>
+    </div>
+    <button class="drawer-close" id="drawerClose" type="button" aria-label="Close">×</button>
+  </div>
+
+  <div class="drawer-body">
+    <p class="hint" style="margin-top:14px;">Panels are tagged <b style="color:var(--amber)">Sample</b> (built-in demo numbers), <b style="color:var(--info)">Manual</b> (what you type here), or <b style="color:var(--good)">Live</b> (read straight from your router by the helper — see the <b>Router</b> panel below). Filling in a box below flips its panel to <b style="color:var(--info)">Manual</b>.</p>
+
+    <fieldset class="fs">
+      <legend>You</legend>
+      <div class="row2">
+        <div class="field"><label for="set_name">Your name</label><input type="text" id="set_name" placeholder="e.g. Anthony Berchman" /></div>
+        <div class="field"><label for="set_account">Account number</label><input type="text" id="set_account" placeholder="e.g. FN210882" /></div>
+      </div>
+    </fieldset>
+
+    <fieldset class="fs">
+      <legend>Plan &amp; wallet <span class="src src-manual">Manual</span></legend>
+      <div class="field"><label for="set_planName">Plan name</label><input type="text" id="set_planName" placeholder="e.g. FibreX Premium" /></div>
+      <div class="row2">
+        <div class="field"><label for="set_price">Monthly price (₦)</label><input type="number" id="set_price" min="0" step="1" placeholder="24500" /></div>
+        <div class="field"><label for="set_wallet">Wallet balance (₦)</label><input type="number" id="set_wallet" min="0" step="0.01" placeholder="0.00" /></div>
+      </div>
+      <div class="field"><label for="set_cap">Data cap (GB per cycle)</label><input type="number" id="set_cap" min="0" step="1" placeholder="300" /></div>
+      <label class="check"><input type="checkbox" id="set_unlimited" /> This plan is unlimited (no data cap)</label>
+      <div class="field"><label for="set_renewal">Renewal date (next)</label><input type="date" id="set_renewal" /></div>
+      <label class="check"><input type="checkbox" id="set_autoRenew" /> Auto-renew is switched on</label>
+    </fieldset>
+
+    <fieldset class="fs" id="routerFieldset">
+      <legend>Router — sync live usage <span class="src src-sample" id="connectBadge">Not connected</span></legend>
+      <p class="hint" style="margin-top:2px;">Read real usage straight from your MTN router. This needs the small <b>helper</b> program running on this computer (setup: <b>helper/README-helper.md</b>). Your password goes only to the helper <b>on this computer</b> — never to the internet, and it is never saved to disk.</p>
+      <div class="field">
+        <label>Which router do you have? (gateway address)</label>
+        <label class="gw-opt"><input type="radio" name="router_gw" value="192.168.100.1" checked /> <span><b>192.168.100.1</b> — MTN FibreX ONT (Huawei)</span></label>
+        <label class="gw-opt"><input type="radio" name="router_gw" value="192.168.1.1" /> <span><b>192.168.1.1</b> — MTN FibreX / Indoor Gateway (ZTE)</span></label>
+        <label class="gw-opt"><input type="radio" name="router_gw" value="192.168.0.1" /> <span><b>192.168.0.1</b> — MTN 5G ODU (ZLT X17U)</span></label>
+        <label class="gw-opt"><input type="radio" name="router_gw" value="__other" id="router_gw_other" /> <span>Other — I'll type my router's address</span></label>
+        <input type="text" id="router_gw_custom" placeholder="e.g. 192.168.100.1" autocomplete="off" spellcheck="false" style="display:none;margin:8px 0 0 26px;max-width:240px;" />
+        <p class="hint" style="margin-top:8px;">Not sure which is yours? Open <b>Command Prompt</b> and type <b>ipconfig</b> — the number beside <b>“Default Gateway”</b> is your router's address. (It's also often printed on the sticker on the box.)</p>
+      </div>
+      <div class="field">
+        <label for="router_pw">Router admin password <span class="hint-inline">— the router box's own password (often on its sticker, or “admin”); not your bank or MyMTN password</span></label>
+        <div class="pw-row">
+          <input type="password" id="router_pw" placeholder="admin" autocomplete="off" spellcheck="false" />
+          <button type="button" class="btn pw-toggle" id="router_pw_show">Show</button>
+        </div>
+      </div>
+      <label class="check"><input type="checkbox" id="router_autosync" checked /> Keep refreshing automatically while the helper is running</label>
+      <label class="check"><input type="checkbox" id="router_remember" /> Remember my password on this PC so tracking keeps running after a restart <span class="hint-inline">(off by default; stored scrambled on this computer only — less private, so use only on a PC you trust)</span></label>
+      <div id="router_forget_row" style="display:none;margin:6px 0 0 26px;">
+        <span class="hint-inline">Your password is saved on this PC, so the helper starts reading on its own after a restart.</span>
+        <button type="button" id="router_forget" style="background:none;border:none;color:var(--bad);cursor:pointer;text-decoration:underline;font:inherit;padding:0;margin-left:4px;">Forget saved password</button>
+      </div>
+      <div style="margin-top:14px;">
+        <button class="btn btn-primary" id="syncBtn" type="button" style="width:100%;">🔌 Sync Router</button>
+      </div>
+      <div class="sync-status" id="syncStatus">Checking for the helper…</div>
+      <div class="detected" id="router_detected"></div>
+      <p class="hint">On the first sync you'll see your <b>connection confirmed</b> and the <b>detected model</b> right away. The <b>daily-usage bars, “used today” and run-out</b> build up over the next hours/days as the helper keeps reading (the router reports a running total, so real daily figures come from the difference between readings). Plan, price, wallet and cap stay <b>Manual</b> — the router doesn't know those.</p>
+    </fieldset>
+
+    <fieldset class="fs" id="speedTestFieldset">
+      <legend>Speed tests <span class="src src-sample" id="speedTestBadge">Sample</span></legend>
+      <p class="hint" style="margin-top:2px;">Your router reports <b>how much</b> data you use — not <b>how fast</b> your line is. A speed test measures your real download &amp; upload, but it <b>uses a little data each time</b> (about 33 MB). Pick how often to run one automatically; you can always run one on demand. Needs the <b>helper</b> running.</p>
+      <div class="field">
+        <label for="speedFreq">Run a speed test automatically…</label>
+        <select id="speedFreq" class="month-pick" style="width:100%;">
+          <option value="0">Off — only when I press the button</option>
+          <option value="30">Every 30 minutes (about 47 GB/month — heavy)</option>
+          <option value="360">Every 6 hours (about 4 GB/month)</option>
+          <option value="720">Twice a day (about 2 GB/month)</option>
+          <option value="1440">Once a day (about 1 GB/month)</option>
+        </select>
+      </div>
+      <div style="margin-top:14px;">
+        <button class="btn btn-primary" id="speedRunBtn" type="button" style="width:100%;">⚡ Run a speed test now</button>
+      </div>
+      <div class="sync-status" id="speedStatus"></div>
+      <p class="hint">The result feeds the <b>Speed vs your plan</b> panel above and is tagged <b style="color:var(--good)">Live</b>. Each test costs a little data because it must send and receive real traffic to time it.</p>
+    </fieldset>
+
+    <fieldset class="fs">
+      <legend>Log daily usage <span class="src src-manual">Manual</span></legend>
+      <p class="hint" style="margin-top:2px;">Type how many GB you used on a day. These real numbers replace the sample data in the big number, the daily chart and "used today".</p>
+      <div class="addrow">
+        <div class="field"><label for="log_date">Date</label><input type="date" id="log_date" /></div>
+        <div class="field"><label for="log_gb">GB used</label><input type="number" id="log_gb" min="0" step="0.1" placeholder="9.8" /></div>
+        <button class="btn btn-add" id="log_add" type="button">Add</button>
+      </div>
+      <div class="log-list" id="logList"></div>
+    </fieldset>
+
+    <div style="margin-top:24px;">
+      <button class="btn" id="resetBtn" type="button" style="width:100%;color:var(--bad);border-color:rgba(251,106,106,0.35);">Clear all my details (back to sample)</button>
+    </div>
+  </div>
+
+  <div class="drawer-actions">
+    <span class="save-note" id="saveNote">Saved ✓</span>
+    <button class="btn btn-primary" id="saveBtn" type="button">Save details</button>
+  </div>
+</aside>
+
+<script>
+/* ================================================================
+   MTN FibreX Dashboard
+   - Self-contained: charts drawn by hand in SVG, nothing loaded
+     from the internet, so the page works fully offline.
+   - SAMPLE below = built-in demo numbers.
+   - SETTINGS     = whatever you type in the Settings drawer,
+                    saved in this browser (localStorage).
+   Each panel is tagged Sample / Manual / Live so you always know
+   whether a number is made-up, typed by you, or (later) auto-read.
+   ================================================================ */
+
+/* ---------- SAMPLE (demo) data ---------- */
+const SAMPLE = {
+  name:"Anthony Berchman", account:"FN210882",
+  planName:"FibreX Premium", price:24500, wallet:0, autoRenew:false,
+  cap:300, used:276.6, dailyAvg:11.5, cycleDaysTotal:30, cycleDayNow:24,
+  ratedSpeed:50, downNow:47.2, upNow:41.0, usedToday:9.8,
+  devicesOnline:8, devicesNote:"2 more than yesterday",
+  uptime:99.2,
+  // 30 days of daily usage (GB), oldest first
+  usage:[8.2,7.4,9.1,10.3,12.6,15.1,16.2,9.8,8.7,7.9,11.2,13.4,14.0,15.6,10.1,9.3,8.8,12.1,13.7,14.9,16.0,10.6,9.9,8.4,11.8,13.1,12.9,9.7,10.9,9.8],
+  down:[46,48,47,45,12,44,47,49,48,46,47,45,43,47,48,49,47,22,46,48,47,49,48,47,45,47,48,46,47,47],
+  up:  [41,42,40,39,10,38,41,43,42,40,41,39,38,41,42,43,41,19,40,42,41,43,42,41,39,41,42,40,41,41],
+  outages:[
+    {when:"Aug 17 · 20:14", mins:125},
+    {when:"Aug 11 · 06:32", mins:24},
+    {when:"Aug 03 · 13:47", mins:72},
+  ],
+  months:[
+    {m:"Mar",full:"March",gb:245},{m:"Apr",full:"April",gb:268},
+    {m:"May",full:"May",gb:251},{m:"Jun",full:"June",gb:289},
+    {m:"Jul",full:"July",gb:302},{m:"Aug",full:"August (so far)",gb:276.6},
+  ],
+  devices:[
+    {name:"Living Room TV", kind:"Samsung · streaming", icon:"📺", gb:88.4},
+    {name:"HP Laptop", kind:"Anthony · work", icon:"💻", gb:61.2},
+    {name:"Anthony's iPhone", kind:"phone", icon:"📱", gb:42.1},
+    {name:"PS5", kind:"gaming", icon:"🎮", gb:33.0},
+    {name:"Front-door CCTV", kind:"camera · always on", icon:"📷", gb:18.7},
+    {name:"Kitchen iPad", kind:"tablet", icon:"📲", gb:15.3},
+  ],
+};
+
+/* ---------- saved settings (localStorage) ---------- */
+const LS_KEY = 'mtnfx.settings.v1';
+function loadSettings(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; } }
+function saveSettings(s){ try{ localStorage.setItem(LS_KEY, JSON.stringify(s)); return true; }catch(e){ return false; } }
+let SETTINGS = loadSettings();
+let MODEL = null;
+
+/* ================================================================
+   LIVE data — talks to the local helper (helper/server.js).
+   The helper is the ONLY thing allowed to read your router; this
+   page just asks it for numbers. If the helper isn't running, all
+   of this quietly does nothing and the page stays on Manual/Sample
+   (it never goes blank).
+   ================================================================ */
+let LIVE = { present:false, records:null, snapshot:null, lastSync:null, detectedModel:null, syncedAt:null,
+             signal:null, devices:null, speedTests:null, speedTestCfg:null, autoSync:false, intervalMinutes:null,
+             savedCredential:false,
+             reliability:null,
+             sources:[], activeSourceId:null, activeRouterIp:null, activeSourceLabel:null,
+             liveObservedAt:null, liveStreaming:false, liveRunning:false, liveSupported:true, liveIntervalSeconds:null };
+const HELPER_PORT = 8947;
+// Served by the helper (localhost) → same-origin calls. Opened from a file →
+// reach the helper at its fixed local address.
+const HELPER_BASE = (location.protocol==='http:'||location.protocol==='https:') &&
+                    (location.hostname==='localhost'||location.hostname==='127.0.0.1')
+  ? '' : 'http://localhost:'+HELPER_PORT;
+let liveTimer=null;
+
+async function helperGet(path){
+  const r=await fetch(HELPER_BASE+path,{cache:'no-store'});
+  if(!r.ok) throw new Error('Helper HTTP '+r.status);
+  return r.json();
+}
+
+function applyLiveState(state){
+  if(!state) return;
+  LIVE.records=Array.isArray(state.records)?state.records:[];
+  LIVE.lastSync=state.lastSync||null;
+  if(state.settings&&state.settings.detectedModel) LIVE.detectedModel=state.settings.detectedModel;
+  if(LIVE.lastSync&&LIVE.lastSync.observedAt) LIVE.syncedAt=LIVE.lastSync.observedAt;
+  // most recent counter reading (for "up for Xh" / current total)
+  let snap=null; const acct=state.accounting||{};
+  Object.keys(acct).forEach(k=>{const o=acct[k]&&acct[k].lastObservation;
+    if(o&&(!snap||String(o.observedAt||'')>String(snap.observedAt||''))) snap=o;});
+  LIVE.snapshot=snap;
+  // Live extras the helper stored under settings this sync (any may be absent).
+  const st=state.settings||{};
+  LIVE.signal=st.signal||null;
+  LIVE.devices=st.devices||null;
+  LIVE.speedTests=Array.isArray(st.speedTests)?st.speedTests:null;
+  LIVE.speedTestCfg=st.speedTestConfig||null;
+  LIVE.reliability=st.reliability||null;
+  // Which router are we actually reading RIGHT NOW? Needed because the helper
+  // keeps the last device list / signal it ever saw, and if you change router
+  // those leftovers would otherwise keep showing as if they were current.
+  LIVE.sources=Array.isArray(state.sources)?state.sources:[];
+  LIVE.activeSourceId=snap?(snap.sourceId||null):null;
+  LIVE.activeRouterIp=snap?(snap.routerIp||null):null;
+  const activeSrc=LIVE.sources.find(s=>s&&s.id===LIVE.activeSourceId)||null;
+  LIVE.activeSourceLabel=activeSrc?activeSrc.label:null;
+}
+
+async function pullHistory(){
+  try{ applyLiveState(await helperGet('/api/history')); renderAll(); updateConnectUI(); }
+  catch(e){ /* keep whatever we already had */ }
+}
+
+/* Ask the helper to re-read the router NOW, reusing the password it already
+   holds in memory — so we never send or store the password from this page.
+   Reading the router is a local call and costs no MTN data. Silent by design:
+   if the helper has no saved password yet (just started / auto-refresh off) or
+   a read is already running, we simply keep showing the last reading. */
+async function refreshLive(){
+  if(!LIVE.present) return;
+  try{
+    const r=await fetch(HELPER_BASE+'/api/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    const d=await r.json().catch(()=>({}));
+    if(d&&d.needsPassword){ LIVE.autoSync=false; updateConnectUI(); return; }
+    if(d&&d.ok){ LIVE.autoSync=true; await pullHistory(); }
+  }catch(e){ /* leave the last reading in place */ }
+}
+
+function startLivePoll(){
+  if(liveTimer) return;
+  liveTimer=setInterval(()=>{ if(LIVE.present) pullHistory(); }, 60000);
+}
+
+/* ---------- the FAST live loop (device count + 5G signal, every few seconds) ----------
+   The helper keeps the very latest device list + signal in memory and serves it
+   from /api/live (a tiny, in-memory read — it does NOT touch the router or the
+   disk, so polling it often is free). We poll it every ~3s so the connected-
+   device count on the page changes within seconds of a device joining/leaving,
+   with no reload and no "synced X minutes ago". We only rebuild the device list
+   in the page when it actually changed, but refresh the signal chips + the Live
+   dot every tick so they never look stale. */
+let fastTimer=null, fastDevSig='', fastFails=0;
+function devSig(dev){
+  if(!dev) return '';
+  const list=Array.isArray(dev.list)?dev.list:[];
+  const parts=list.map(d=>((d.mac||'')+'|'+(d.ip||'')+'|'+(d.name||''))).sort();
+  return (dev.count==null?'':dev.count)+'#'+parts.join(',');
+}
+async function fastLiveTick(){
+  if(!LIVE.present||!LIVE.liveSupported) return;
+  let d;
+  try{ d=await helperGet('/api/live'); fastFails=0; }
+  catch(e){ if(++fastFails>=3){ LIVE.liveStreaming=false; updateConnectUI(); } return; }
+  if(!d||d.ok===false) return;
+  LIVE.liveRunning=!!d.running;
+  if(d.supported===false){        // this router has no live path — stop the fast loop
+    LIVE.liveSupported=false; LIVE.liveStreaming=false; stopFastLive(); updateConnectUI(); return;
+  }
+  let changed=false;
+  if(d.devices){
+    const sig=devSig(d.devices);
+    LIVE.devices=d.devices;
+    if(sig!==fastDevSig){ fastDevSig=sig; changed=true; }
+  }
+  if(d.signal) LIVE.signal=d.signal;
+  if(d.at) LIVE.liveObservedAt=d.at;
+  // "Streaming" = the helper's loop is alive and read the router very recently.
+  const freshMs=Math.max(15000,(Number(d.intervalSeconds)||5)*3000);
+  LIVE.liveStreaming = !!(d.running && d.at && (Date.now()-new Date(d.at).getTime()<freshMs));
+  MODEL=computeModel();
+  if(changed){ renderKPIs(MODEL); renderDevices(MODEL); }
+  renderSignal(MODEL);   // keeps the "read just now" chip fresh (cheap)
+  updateConnectUI();     // keeps the ● Live dot steady (no timestamp) while streaming
+}
+function startFastLive(){
+  if(fastTimer||!LIVE.present||!LIVE.liveSupported) return;
+  const secs=(LIVE.liveIntervalSeconds&&LIVE.liveIntervalSeconds>=3)?Math.min(LIVE.liveIntervalSeconds,4):3;
+  fastTimer=setInterval(fastLiveTick,secs*1000);
+  fastLiveTick();  // fill in immediately
+}
+function stopFastLive(){ if(fastTimer){ clearInterval(fastTimer); fastTimer=null; } }
+
+async function detectHelper(){
+  try{
+    const cfg=await helperGet('/api/config');
+    LIVE.present=!!(cfg&&cfg.ok!==false);
+    LIVE.autoSync=!!(cfg&&cfg.autoSyncEnabled);
+    LIVE.intervalMinutes=(cfg&&Number(cfg.intervalMinutes))||null;
+    setSavedCredUI(!!(cfg&&cfg.savedCredential)); // helper remembers the password on this PC?
+    if(cfg&&cfg.live){
+      LIVE.liveIntervalSeconds=Number(cfg.live.intervalSeconds)||null;
+      LIVE.liveSupported=cfg.live.supported!==false;
+    }
+  }
+  catch(e){ LIVE.present=false; LIVE.autoSync=false; }
+  if(LIVE.present){
+    await pullHistory();               // show the last saved reading instantly
+    startLivePoll();
+    startFastLive();                   // second-by-second device count + signal
+    if(LIVE.autoSync) refreshLive();   // then grab a fresh read in the background (no password needed)
+  }
+  updateConnectUI();
+  const every=LIVE.intervalMinutes?('every '+describeMins(LIVE.intervalMinutes)):'automatically';
+  if(!LIVE.present){
+    setSyncStatus('Helper not running. Start it with helper/start-helper.cmd, then reopen this page. (You can still type details below.)','warn');
+  }else if(LIVE.records&&LIVE.records.length){
+    if(LIVE.autoSync)
+      setSyncStatus('Helper connected ✓ — live data refreshes '+every+' and each time you open this page. No need to click Sync.','ok');
+    else
+      setSyncStatus('Helper connected ✓ — showing your last saved reading. Enter your password and Sync once to turn on automatic refresh.','ok');
+  }else{
+    setSyncStatus('Helper connected ✓ — enter your router password and click Sync Router to start reading.','ok');
+  }
+}
+
+function setSyncStatus(msg,kind){
+  const el=$('syncStatus'); if(!el) return;
+  el.textContent=msg;
+  el.className='sync-status'+(kind?(' ss-'+kind):'');
+}
+
+function relTime(iso){
+  if(!iso) return '';
+  const mins=Math.max(0,Math.round((Date.now()-new Date(iso).getTime())/60000));
+  if(mins<1) return 'just now';
+  if(mins<60) return mins+' min ago';
+  const h=Math.floor(mins/60); return h+'h '+(mins%60)+'m ago';
+}
+/* escape router-supplied text (device names, band, etc.) before putting it in HTML */
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+/* generic status-line writer (same look as the sync status line) */
+function setStatusLine(id,msg,kind){const el=$(id);if(!el)return;el.textContent=msg;el.className='sync-status'+(kind?(' ss-'+kind):'');}
+/* human words for a speed-test interval in minutes */
+function describeMins(m){m=Number(m)||0;if(m===0)return 'off';if(m%1440===0){const d=m/1440;return d+' day'+(d===1?'':'s');}if(m%60===0){const h=m/60;return h+' hour'+(h===1?'':'s');}return m+' min';}
+
+function updateConnectUI(){
+  const hasLive=!!(LIVE.records&&LIVE.records.length);
+  const dm=$('router_detected');
+  if(dm){
+    if(LIVE.detectedModel) dm.textContent='Detected: '+LIVE.detectedModel+(LIVE.syncedAt?' · synced '+relTime(LIVE.syncedAt):'');
+    else if(LIVE.present) dm.textContent='Helper is running — enter your password and click Sync Router.';
+    else dm.textContent='Helper not detected. Start it with helper/start-helper.cmd, then reopen this page.';
+  }
+  const streaming=!!LIVE.liveStreaming;
+  const badge=$('connectBadge');
+  if(badge){
+    badge.classList.remove('src-sample','src-manual','src-live');
+    if(hasLive||streaming){ badge.classList.add('src-live'); badge.textContent='Live'; }
+    else if(LIVE.present){ badge.classList.add('src-manual'); badge.textContent='Helper ready'; }
+    else { badge.classList.add('src-sample'); badge.textContent='Not connected'; }
+  }
+  const ind=$('liveDot');
+  if(ind){
+    // While the fast loop is streaming, show a STEADY "● Live" — no "X min ago".
+    // Only if it stalls do we fall back to showing how old the last reading is.
+    if(streaming){ ind.style.display=''; ind.className='live-ind on'; ind.textContent='● Live'; }
+    else if(hasLive){ ind.style.display=''; ind.className='live-ind on'; ind.textContent='● Live · '+relTime(LIVE.syncedAt); }
+    else if(LIVE.present){ ind.style.display=''; ind.className='live-ind ready'; ind.textContent='○ Helper ready'; }
+    else { ind.style.display='none'; }
+  }
+}
+
+/* Reflect whether the helper has the password saved ON THIS PC: show/hide the
+   "Forget saved password" row, and keep the checkbox ticked while it's saved
+   (a saved credential IS "remembered on this PC"). */
+function setSavedCredUI(saved){
+  LIVE.savedCredential=!!saved;
+  const row=$('router_forget_row'); if(row) row.style.display=saved?'':'none';
+  const cb=$('router_remember'); if(cb&&saved) cb.checked=true;
+}
+
+/* Which gateway address did they choose? "__other" = they typed their own, because
+   not every MTN box uses one of the presets (FibreX ONTs often answer on
+   192.168.100.1). Returns '' if "Other" is picked but nothing was typed. */
+function currentGateway(){
+  const sel=document.querySelector('input[name="router_gw"]:checked');
+  if(!sel) return '';
+  if(sel.value!=='__other') return sel.value;
+  const box=$('router_gw_custom');
+  return box?box.value.trim():'';
+}
+
+/* Show the free-text address box only while "Other" is selected. */
+function syncGatewayCustomUI(){
+  const other=$('router_gw_other'), box=$('router_gw_custom');
+  if(!other||!box) return;
+  box.style.display=other.checked?'':'none';
+}
+
+async function syncRouter(){
+  const gw=currentGateway();
+  const pw=($('router_pw')&&$('router_pw').value)||'';
+  const auto=$('router_autosync')?$('router_autosync').checked:true;
+  const remember=$('router_remember')?$('router_remember').checked:false;
+  if(!gw){ setSyncStatus('Type your router’s address first (run ipconfig and copy the “Default Gateway” number).','warn'); return; }
+  if(!/^[a-zA-Z0-9.\-:]+$/.test(gw)){ setSyncStatus('That doesn’t look like a router address. It should look like 192.168.100.1','warn'); return; }
+  if(!pw){ setSyncStatus('Type your router admin password first (often “admin”).','warn'); return; }
+  setSyncStatus('Connecting to your router at '+gw+'…','busy');
+  $('syncBtn').disabled=true;
+  try{
+    const r=await fetch(HELPER_BASE+'/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({collectorId:'auto',routerIp:gw,password:pw,autoSync:auto,rememberPassword:remember})});
+    const data=await r.json();
+    if(!r.ok||data.error) throw new Error(data.error||('Helper error '+r.status));
+    LIVE.present=true;
+    LIVE.autoSync=auto;   // Sync remembers the password in the helper, arming automatic refresh (unless you unticked it)
+    applyLiveState(data.data||data);
+    // remember preferences (never the password unless the box is ticked)
+    SETTINGS.gateway=gw; SETTINGS.autoSync=auto; SETTINGS.rememberPw=remember;
+    if(SETTINGS.rememberPw) SETTINGS.routerPw=pw; else delete SETTINGS.routerPw;
+    saveSettings(SETTINGS);
+    setSavedCredUI(remember); // the helper now has (or has dropped) the on-PC copy
+    renderAll(); updateConnectUI(); startLivePoll();
+    // A fresh Sync re-arms the helper's fast loop — (re)start ours to match.
+    LIVE.liveSupported=true; fastDevSig=''; stopFastLive();
+    if(auto) startFastLive();   // begin second-by-second device count + signal
+    if((data.counterStatus||'')==='baseline'){
+      setSyncStatus('Connected ✓ '+(data.detectedModel||'router')+'. First reading saved — daily usage starts filling in from now. Leave the helper running.','ok');
+    }else{
+      setSyncStatus('Synced ✓ '+(data.detectedModel||'router')+' — live usage updated.','ok');
+    }
+  }catch(e){
+    let msg=(e&&e.message)||String(e);
+    if(/Failed to fetch|NetworkError|load failed|fetch/i.test(msg))
+      msg='Could not reach the helper. Is it running? Double-click helper/start-helper.cmd, then try again.';
+    setSyncStatus('✕ '+msg,'err');
+  }finally{
+    if($('syncBtn')) $('syncBtn').disabled=false;
+  }
+}
+
+/* ---------- small helpers ---------- */
+const $=id=>document.getElementById(id);
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const rolling=(a,w)=>a.map((_,i)=>{const s=Math.max(0,i-w+1);
+  // Skip days we never measured — averaging them in as zero invents quiet days.
+  const seg=a.slice(s,i+1).filter(v=>v!=null&&isFinite(v));
+  return seg.length?sum(seg)/seg.length:null;});
+const fmtG=n=>{const r=Math.round((Number(n)||0)*10)/10;return Number.isInteger(r)?String(r):r.toFixed(1);};
+function fmtMoney(n,dec){n=Number(n)||0;return n.toLocaleString('en-NG',{minimumFractionDigits:dec,maximumFractionDigits:dec});}
+function fmtDays(d){if(!isFinite(d))return 'a while';if(d<1)return 'under a day';const r=Math.round(d);return r+(r===1?' day':' days');}
+function fmtDur(mins){mins=Math.round(mins);const h=Math.floor(mins/60),m=mins%60;return h?`${h}h ${String(m).padStart(2,'0')}m`:`${m}m`;}
+function fmtObserved(seconds){seconds=Math.max(0,Math.round(Number(seconds)||0));const d=Math.floor(seconds/86400);if(d>=1)return d+(d===1?' day':' days');const h=Math.floor(seconds/3600);if(h>=1)return h+(h===1?' hour':' hours');const m=Math.floor(seconds/60);if(m>=1)return m+(m===1?' min':' mins');return 'under a minute';}
+function runoutDateStr(d){if(!isFinite(d))return '—';const dt=new Date(Date.now()+d*86400000);return dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});}
+function initials(name){const p=(name||'').trim().split(/\s+/).filter(Boolean);const a=(p[0]||'')[0]||'',b=(p[1]||'')[0]||'';return (a+b||(p[0]||'').slice(0,2)||'ME').toUpperCase();}
+/* date helpers (local, no libraries) */
+function startOfToday(){const d=new Date();d.setHours(0,0,0,0);return d;}
+function isoDate(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${dd}`;}
+function parseISO(s){const p=String(s).split('-').map(Number);return new Date(p[0],(p[1]||1)-1,p[2]||1);}
+function addMonths(d,n){const x=new Date(d);x.setMonth(x.getMonth()+n);return x;}
+function dayDiff(a,b){return Math.round((a-b)/86400000);}
+
+/* ---------- work out the billing cycle ---------- */
+function computeCycle(today){
+  if(SETTINGS.renewalDate){
+    let renewal=parseISO(SETTINGS.renewalDate);renewal.setHours(0,0,0,0);
+    let guard=0;while(renewal<today && guard++<120){renewal=addMonths(renewal,1);}
+    const cycleStart=addMonths(renewal,-1);
+    const daysTotal=Math.max(1,dayDiff(renewal,cycleStart));
+    let dayNow=dayDiff(today,cycleStart)+1;
+    dayNow=Math.min(Math.max(dayNow,1),daysTotal);
+    return {src:'manual',cycleStart,renewal,daysTotal,dayNow,daysToRenew:Math.max(0,dayDiff(renewal,today))};
+  }
+  const daysTotal=SAMPLE.cycleDaysTotal, dayNow=SAMPLE.cycleDayNow;
+  const cycleStart=new Date(today);cycleStart.setDate(cycleStart.getDate()-(dayNow-1));
+  const renewal=new Date(cycleStart);renewal.setDate(renewal.getDate()+daysTotal);
+  return {src:'sample',cycleStart,renewal,daysTotal,dayNow,daysToRenew:daysTotal-dayNow};
+}
+
+/* ---------- is a stored live reading still worth believing? ----------
+
+   The helper remembers the last connected-device list and the last radio
+   signal it ever managed to read, and keeps them in the saved file. That is
+   deliberate — it survives a restart. But two things can make a remembered
+   reading a LIE if the page shows it as "Live":
+
+     it is old        the helper stopped reading (PC asleep, password not
+                      saved, router unplugged) and the numbers froze;
+     it is another    you changed router. The new box may not report devices
+     router's         or radio signal at all, so the old box's readings just
+                      sit there looking current.
+
+   Both really happened here: a device list and a "5G(NSA)" signal from a 5G
+   router that was swapped for a fibre box kept showing as Live for days. So a
+   reading must prove it is recent AND that it came from the router we are
+   reading now. Anything else falls back to Sample, clearly labelled.        */
+const LIVE_READING_MAX_MINUTES = 15;   // devices/signal are read every few seconds when healthy
+
+function minutesSince(iso){
+  if(!iso) return null;
+  const t=new Date(iso).getTime();
+  if(!isFinite(t)) return null;
+  return (Date.now()-t)/60000;
+}
+function freshFromActiveRouter(reading){
+  if(!reading) return false;
+  const age=minutesSince(reading.observedAt);
+  if(age===null||age>LIVE_READING_MAX_MINUTES) return false;
+  // Older saved readings predate the stamp; if we know which router is active
+  // and the reading says it came from a different one, don't trust it.
+  if(reading.sourceId&&LIVE.activeSourceId&&reading.sourceId!==LIVE.activeSourceId) return false;
+  if(reading.routerIp&&LIVE.activeRouterIp&&reading.routerIp!==LIVE.activeRouterIp) return false;
+  return true;
+}
+/* A plain-English reason, so the page never just goes quiet on you. */
+function whyNotLive(reading,what){
+  if(!reading) return `Your router doesn't report ${what}.`;
+  const differentBox=(reading.sourceId&&LIVE.activeSourceId&&reading.sourceId!==LIVE.activeSourceId)
+                   ||(reading.routerIp&&LIVE.activeRouterIp&&reading.routerIp!==LIVE.activeRouterIp);
+  if(differentBox){
+    return `Your old router reported ${what}; ${LIVE.activeSourceLabel||'the router you use now'} does not.`;
+  }
+  const age=minutesSince(reading.observedAt);
+  if(age===null) return `Your router doesn't report ${what}.`;
+  // Past a day, hours stop meaning anything to read ("326h 55m ago"). Say days.
+  if(age>60*24){
+    const days=Math.round(age/(60*24));
+    return `Last read ${days} day${days===1?'':'s'} ago — too old to show as live.`;
+  }
+  return `Not updating — last read ${relTime(reading.observedAt)}.`;
+}
+
+/* ---------- build the effective numbers (sample + your settings) ---------- */
+function computeModel(){
+  const S=SETTINGS, today=startOfToday(), todayISO=isoDate(today);
+
+  // real usage you've logged
+  let log=Array.isArray(S.usageLog)?S.usageLog.filter(e=>e&&e.date&&isFinite(+e.gb)):[];
+  log=log.map(e=>({date:e.date,gb:+e.gb})).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+  const hasLog=log.length>0;
+
+  const cycle=computeCycle(today);
+
+  // data cap
+  const unlimited=!!S.unlimited;
+  const capSet=unlimited||(S.cap!=null&&S.cap!==''&&isFinite(+S.cap)&&+S.cap>0);
+  const cap=unlimited?null:(capSet?+S.cap:SAMPLE.cap);
+
+  // usage figures — priority: Live (router) > Manual (logged) > Sample
+  let usageArr,usageDates=null,usageMissing=null,usageMinimum=null,usageEstimate=null,used,dailyAvg,usageSrc,usedToday,usedTodaySrc;
+  /* The router in use now. EVERYTHING on this page must reflect only this box —
+     the history also holds days from a retired 5G line the user no longer has,
+     and they asked that none of it show here. speedEraStart marks when we first
+     read this box, so speed tests from the old line drop off too. */
+  let speedEraStart=null;
+  const liveRecs=(LIVE&&Array.isArray(LIVE.records)&&LIVE.records.length)
+    ? LIVE.records.map(r=>({date:r.date,gb:+(r.usageGB!=null?r.usageGB:0),
+                            confidence:r.confidence||null,sourceLabel:r.sourceLabel||null,
+                            sourceId:r.sourceId||null}))
+                  .filter(e=>e.date&&isFinite(e.gb))
+                  .sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0)
+    : null;
+  const series=liveRecs||(hasLog?log:null);
+  const seriesSrc=liveRecs?'live':'manual';
+  let cycleGap=0,cycleMinimumDays=0,cycleEstimateDays=0,cycleServices=[],cycleRecordedDays=0;
+  let monthsArr=null; /* real per-calendar-month totals, this router only */
+  /* Busiest day, scoped to the router in use NOW. Set inside the live branch
+     where we know which days came from which connection; a plain max otherwise. */
+  let busiest=0, busiestDate=null, busiestScoped=false;
+  if(series){
+    /* Walk a real 30-DAY CALENDAR window, not "the last 30 entries". Those are
+       not the same thing: with an 11-day hole in the history, the last-30-entries
+       version quietly pushed the two sides of the hole together so the chart
+       looked like an unbroken run of days. A day with no reading is a day we
+       did not watch, and it has to look different from a day of no usage. */
+    /* Keep ONLY the router in use now. When live and we know which source that
+       is, every day from any other connection (the retired 5G line) is dropped
+       so nothing from it shows anywhere — chart, totals, average or run-out.
+       Manual/sample data has no source, so mineDay lets it all through. */
+    const activeId=(seriesSrc==='live' && LIVE.activeSourceId)?LIVE.activeSourceId:null;
+    const mineDay=e=>!activeId||e.sourceId===activeId;
+    /* When did we first read the router in use now? Speed tests aren't tagged
+       with a router, so we drop any measured before this — they were the old line. */
+    if(activeId&&LIVE&&Array.isArray(LIVE.records)){
+      LIVE.records.forEach(r=>{ if(r&&r.sourceId===activeId&&r.observedAt){
+        const t=String(r.observedAt); if(!speedEraStart||t<speedEraStart) speedEraStart=t; }});
+    }
+    const byDate=new Map();
+    series.filter(mineDay).forEach(e=>byDate.set(e.date,e));
+    const WINDOW_DAYS=30;
+    usageArr=[];usageDates=[];usageMissing=[];usageMinimum=[];usageEstimate=[];
+    for(let i=WINDOW_DAYS-1;i>=0;i--){
+      const d=new Date(today);d.setDate(d.getDate()-i);
+      const iso=isoDate(d), hit=byDate.get(iso);
+      usageDates.push(iso);
+      usageArr.push(hit?hit.gb:0);
+      usageMissing.push(!hit);
+      usageMinimum.push(!!(hit&&hit.confidence==='observed-minimum'));
+      usageEstimate.push(!!(hit&&hit.confidence==='observed-estimate'));
+    }
+    const startISO=isoDate(cycle.cycleStart);
+    const inCycle=series.filter(e=>e.date>=startISO&&e.date<=todayISO&&mineDay(e));
+    used=+sum(inCycle.map(e=>e.gb)).toFixed(2);
+    dailyAvg=inCycle.length?+(sum(inCycle.map(e=>e.gb))/inCycle.length).toFixed(2)
+             :+(sum(usageArr)/(usageArr.length||1)).toFixed(2);
+    usageSrc=seriesSrc;
+    /* What is this cycle total actually made of? Days never watched on this
+       router, and days that are only a floor or an estimate, change what the
+       headline number means — so count them and say so on the page. */
+    cycleRecordedDays=inCycle.length;
+    cycleGap=Math.max(0,(dayDiff(today,cycle.cycleStart)+1)-cycleRecordedDays);
+    cycleMinimumDays=inCycle.filter(e=>e.confidence==='observed-minimum').length;
+    cycleEstimateDays=inCycle.filter(e=>e.confidence==='observed-estimate').length;
+    cycleServices=[...new Set(inCycle.map(e=>e.sourceLabel).filter(Boolean))];
+    /* Monthly consumption, built from the SAME scoped daily records: sum each
+       day's GB into its calendar month. This is the real thing, not sample. */
+    const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const MS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const curYM=todayISO.slice(0,7), curYear=today.getFullYear();
+    const monthMap=new Map();
+    series.filter(mineDay).forEach(e=>{ const ym=e.date.slice(0,7); monthMap.set(ym,(monthMap.get(ym)||0)+e.gb); });
+    monthsArr=[...monthMap.keys()].sort().map(ym=>{
+      const [y,mo]=ym.split('-').map(Number), idx=mo-1, soFar=ym===curYM;
+      const yLabel=(y!==curYear)?(" '"+String(y).slice(2)):'';
+      return {m:MS[idx], full:MN[idx]+yLabel+(soFar?' (so far)':''), gb:+monthMap.get(ym).toFixed(1)};
+    });
+    /* Busiest day of this cycle, this router (inCycle is already scoped). */
+    busiestScoped=!!activeId;
+    if(inCycle.length){ const top=inCycle.reduce((a,b)=>b.gb>a.gb?b:a); busiest=top.gb; busiestDate=top.date; }
+    else if(!activeId){ busiest=usageArr.length?Math.max(...usageArr):0; }
+    const te=series.find(e=>e.date===todayISO&&mineDay(e));
+    if(te){ usedToday=te.gb; usedTodaySrc=seriesSrc; }
+    else if(seriesSrc==='live'){
+      /* No record for today. That means EITHER nothing has been used yet, OR
+         the helper has not read the router today at all. Only the first is a
+         Live "0". Checking the last reading tells us which. */
+      const lastRead=(LIVE&&LIVE.snapshot)?LIVE.snapshot.observedAt:null;
+      const readToday=lastRead&&isoDate(new Date(lastRead))===todayISO;
+      usedToday=0; usedTodaySrc=readToday?'live':'stale';
+    }
+    else { usedToday=SAMPLE.usedToday; usedTodaySrc='sample'; }
+  }else{
+    usageArr=SAMPLE.usage; used=SAMPLE.used; dailyAvg=SAMPLE.dailyAvg; usageSrc='sample';
+    usedToday=SAMPLE.usedToday; usedTodaySrc='sample';
+    busiest=Math.max(...usageArr);
+  }
+
+  const projected=Math.round(dailyAvg*cycle.daysTotal);
+  const remaining=cap==null?null:+(cap-used).toFixed(1);
+  const daysToRunout=cap==null?Infinity:(remaining>0?remaining/(dailyAvg||1):0);
+
+  // plan & wallet
+  const planName=S.planName||SAMPLE.planName;
+  const price=(S.price!=null&&S.price!=='')?+S.price:SAMPLE.price;
+  const wallet=(S.wallet!=null&&S.wallet!=='')?+S.wallet:SAMPLE.wallet;
+  const autoRenew=(S.autoRenew!=null)?!!S.autoRenew:SAMPLE.autoRenew;
+  const planManual=!!(S.planName||(S.price!=null&&S.price!=='')||(S.wallet!=null&&S.wallet!=='')||S.renewalDate||capSet);
+
+  // ---- Live 5G signal (current link + instantaneous throughput) — Live only ----
+  const sig=freshFromActiveRouter(LIVE&&LIVE.signal)?LIVE.signal:null;
+
+  // ---- Live speed tests (real download/upload over time) — Live only ----
+  // Keep only tests that produced a download figure; chart the most recent 30.
+  // Speed tests aren't tagged with a router, so drop any run BEFORE we first
+  // read the router in use now — those measured the old 5G line, not this one.
+  const stAll=(LIVE&&Array.isArray(LIVE.speedTests))
+    ? LIVE.speedTests.filter(t=>t&&t.downMbps!=null&&(!speedEraStart||String(t.at||t.observedAt||'')>=speedEraStart))
+    : [];
+  const stests=stAll.slice(-30);
+  const hasSpeed=stests.length>0;
+  const latestTest=hasSpeed?stests[stests.length-1]:null;
+  const speedDown=hasSpeed?stests.map(t=>t.downMbps):SAMPLE.down;
+  const speedUp=hasSpeed?stests.map(t=>(t.upMbps!=null?t.upMbps:0)):SAMPLE.up;
+  const downNow=hasSpeed?latestTest.downMbps:SAMPLE.downNow;
+  const upNow=hasSpeed?(latestTest.upMbps!=null?latestTest.upMbps:null):SAMPLE.upNow;
+  const speedSrc=hasSpeed?'live':'sample';
+
+  // ---- Live devices (names/MAC/IP + count; the router does NOT track per-device GB) ----
+  // A device list is only Live if it is RECENT and came from the router we are
+  // reading now. The helper remembers the last list it ever saw, so without
+  // these two checks a list read from an old router keeps showing "connected to
+  // your router" forever after that router is gone.
+  const devStored=(LIVE&&LIVE.devices)?LIVE.devices:null;
+  const devLive=freshFromActiveRouter(devStored)?devStored:null;
+  const devicesList=(devLive&&Array.isArray(devLive.list))?devLive.list:null;
+  const devicesOnline=(devLive&&devLive.count!=null)?devLive.count:SAMPLE.devicesOnline;
+  const devicesSrc=devLive?'live':'sample';
+  // Say WHY, in plain words, when we are not showing real devices.
+  const devicesWhyNot=devLive?null:whyNotLive(devStored,'connected devices');
+
+  // ---- Live reliability (real uptime % + real outages from the helper's uptime watcher) ----
+  // Live only once the watcher has actually observed something; otherwise Sample.
+  const rel=(LIVE&&LIVE.reliability)?LIVE.reliability:null;
+  const relLive=!!(rel&&rel.monitoring&&(((rel.observedSeconds||0)>0)||(Array.isArray(rel.outages)&&rel.outages.length>0)));
+  const relUptime=relLive?rel.uptimePct:SAMPLE.uptime;
+  const relOutages=relLive
+    ?(Array.isArray(rel.outages)?rel.outages:[]).map(o=>({when:o.when,mins:o.mins,type:o.type,ongoing:!o.end})).slice().reverse()
+    :SAMPLE.outages;
+  const reliabilitySrc=relLive?'live':'sample';
+
+  return {
+    today,todayISO,cycle,hasLog,
+    cap,unlimited,capSrc:capSet?'manual':'sample',
+    usageArr,usageDates,usageMissing,usageMinimum,usageEstimate,used,dailyAvg,usageSrc,
+    cycleGap,cycleMinimumDays,cycleEstimateDays,cycleServices,cycleRecordedDays,
+    usedToday,usedTodaySrc,busiest,busiestDate,busiestScoped,projected,remaining,daysToRunout,
+    planName,price,wallet,autoRenew,planSrc:planManual?'manual':'sample',
+    ratedSpeed:SAMPLE.ratedSpeed,downNow,upNow,down:speedDown,up:speedUp,speedSrc,latestTest,speedTestCount:stests.length,signal:sig,
+    uptime:relUptime,outages:relOutages,reliabilitySrc,reliability:rel,
+    devicesOnline,devicesNote:SAMPLE.devicesNote,devices:SAMPLE.devices,devicesList,devicesSrc,devicesWhyNot,
+    months:(monthsArr&&monthsArr.length)?monthsArr:SAMPLE.months,
+    monthsSrc:(monthsArr&&monthsArr.length)?seriesSrc:'sample',
+  };
+}
+
+/* ---------- tag helper ---------- */
+function setBadge(id,src){
+  const el=$(id); if(!el)return;
+  el.classList.remove('src-sample','src-manual','src-live');
+  el.classList.add('src-'+src);
+  el.textContent=src==='manual'?'Manual':src==='live'?'Live':'Sample';
+}
+function hasAnyManual(){
+  const S=SETTINGS;
+  return !!(S.name||S.account||S.planName||(S.price!=null&&S.price!=='')||(S.cap!=null&&S.cap!=='')||S.unlimited||S.renewalDate||(S.wallet!=null&&S.wallet!=='')||(Array.isArray(S.usageLog)&&S.usageLog.length));
+}
+
+/* ---------- count-up animation for the big number ---------- */
+let countTok=0;
+function countUp(el,target){
+  target=Number(target)||0;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=fmtG(target);return;}
+  const my=++countTok, dur=1000, t0=performance.now();
+  requestAnimationFrame(function step(t){
+    if(my!==countTok)return;
+    const p=Math.min(1,(t-t0)/dur);
+    el.textContent=fmtG(target*(1-Math.pow(1-p,3)));
+    if(p<1)requestAnimationFrame(step); else el.textContent=fmtG(target);
+  });
+}
+
+/* ================================================================
+   RENDER: the non-chart parts of the page
+   ================================================================ */
+function renderTopBar(){
+  const manual=hasAnyManual(), live=!!(LIVE.records&&LIVE.records.length), tb=$('topBadge');
+  tb.classList.remove('src-sample','src-manual','src-live');
+  if(live){ tb.classList.add('src-live'); tb.textContent='Live data'; }
+  else if(manual){ tb.classList.add('src-manual'); tb.textContent='Your data'; }
+  else { tb.classList.add('src-sample'); tb.textContent='Sample data'; }
+  const name=SETTINGS.name||SAMPLE.name, acct=SETTINGS.account||SAMPLE.account;
+  $('acctName').textContent=name;
+  $('acctNo').textContent=acct;
+  $('acctAvatar').textContent=initials(name);
+}
+
+function renderHero(M){
+  setBadge('srcHero',M.usageSrc==='live'?'live':((M.usageSrc==='manual'||M.capSrc==='manual')?'manual':'sample'));
+  $('cycleDay').textContent=M.cycle.dayNow+" / "+M.cycle.daysTotal;
+  $('dailyAvg').textContent=fmtG(M.dailyAvg)+" GB";
+  /* Busiest day is scoped to the router in use now (see computeModel). If that
+     router has no measured day yet this cycle, say so plainly rather than 0. */
+  $('busiest').textContent=(M.busiestScoped&&!(M.busiest>0))?"—":fmtG(M.busiest)+" GB";
+  $('projected').textContent=M.projected+" GB";
+  $('updatedAt').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  renderUsageCaveat(M);
+
+  if(M.unlimited){
+    $('bigLabel').textContent="Used this cycle";
+    $('runout').innerHTML="Unlimited plan — no monthly data cap to run out of.";
+    $('usebarWrap').style.display='none';
+    countUp($('dataLeft'),M.used);
+    return;
+  }
+  $('bigLabel').textContent="Data left this cycle";
+  $('usebarWrap').style.display='';
+  if(M.remaining<=0){
+    $('runout').innerHTML=`You've reached your full <b>${fmtG(M.cap)} GB</b> for this cycle — renews in <b>${fmtDays(M.cycle.daysToRenew)}</b>.`;
+    countUp($('dataLeft'),0);
+  }else{
+    const dtr=M.daysToRunout, dtren=M.cycle.daysToRenew;
+    $('runout').innerHTML=`At your recent pace you'll run out in <b>${fmtDays(dtr)}</b> — about <b>${runoutDateStr(dtr)}</b>, ${dtr<dtren?'before':'after'} your renewal.`;
+    countUp($('dataLeft'),M.remaining);
+  }
+  $('usedTxt').textContent=fmtG(M.used)+" GB used";
+  $('capTxt').textContent="of "+fmtG(M.cap)+" GB";
+  setTimeout(()=>{$('useFill').style.width=Math.min(100,M.used/M.cap*100)+"%";},150);
+}
+
+/* Everything the headline "used this cycle" figure is NOT telling you.
+
+   A single big number invites you to trust it completely. Three things can make
+   it mean less than it looks:
+     - days in the cycle nobody measured (the helper wasn't running);
+     - days that are only a FLOOR, because the router's meter rolled over more
+       times than anything could record;
+     - readings from two different services added together, if you changed
+       router part-way through the cycle.
+   None of these can be fixed by arithmetic, so they are said out loud instead. */
+function renderUsageCaveat(M){
+  const el=$('usageCaveat'); if(!el) return;
+  if(M.usageSrc!=='live'){ el.style.display='none'; el.innerHTML=''; return; }
+  const bits=[];
+  if(M.cycleGap>0){
+    bits.push(`<b>${M.cycleGap} day${M.cycleGap===1?'':'s'} of this cycle were never measured</b>`
+      +` — the helper wasn't running, so that usage isn't in this total.`);
+  }
+  if(M.cycleEstimateDays>0){
+    bits.push(`<b>${M.cycleEstimateDays} day${M.cycleEstimateDays===1?'':'s'} are a best estimate</b>`
+      +` — your PC was off and the router's meter rolled over more than once. The most likely`
+      +` figure was worked out from your normal daily usage, so treat those days (marked ~) as a`
+      +` close guess, not an exact count.`);
+  }
+  if(M.cycleMinimumDays>0){
+    bits.push(`<b>${M.cycleMinimumDays} day${M.cycleMinimumDays===1?'':'s'} are a minimum, not an exact figure</b>`
+      +` — your router's meter only counts to 4.29 GB before starting again, and over a long gap`
+      +` it can go round more than once without leaving any trace. The real figure is higher.`);
+  }
+  if(M.cycleServices&&M.cycleServices.length>1){
+    bits.push(`<b>This total adds up two different connections</b> (${M.cycleServices.map(esc).join(' and ')}),`
+      +` because you changed router part-way through the cycle.`);
+  }
+  if(!bits.length){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='';
+  el.innerHTML=bits.map(b=>`<div>• ${b}</div>`).join('');
+}
+
+function renderKPIs(M){
+  setBadge('srcUptimeKpi',M.reliabilitySrc);
+  $('kpiUptime').innerHTML=fmtG(M.uptime)+'<small>%</small>';
+  $('kpiUptimeSub').textContent=`${M.outages.length} outages · ${fmtDur(sum(M.outages.map(o=>o.mins)))} down`;
+
+  setBadge('srcDevicesKpi',M.devicesSrc);
+  $('kpiDevices').innerHTML=M.devicesOnline+'<small>now</small>';
+  $('kpiDevicesSub').textContent=(M.devicesSrc==='live')?'connected to your router':(M.devicesWhyNot||M.devicesNote);
+
+  setBadge('srcTodayKpi',M.usedTodaySrc==='stale'?'sample':M.usedTodaySrc);
+  $('kpiToday').innerHTML=fmtG(M.usedToday)+'<small>GB</small>';
+  if(M.usedTodaySrc==='stale'){
+    // A "0" here would read as "you've used nothing today" when the truth is
+    // that nobody looked. Say which it is.
+    const last=(LIVE&&LIVE.snapshot)?LIVE.snapshot.observedAt:null;
+    $('kpiToday').innerHTML='—';
+    $('kpiTodaySub').textContent=last?('not read today · last reading '+relTime(last)):'no reading today';
+  }else{
+    const diff=((M.usedToday-M.dailyAvg)/(M.dailyAvg||1))*100;
+    $('kpiTodaySub').innerHTML=`<span class="${diff>=0?'down':'up'}">${diff>=0?'▲':'▼'} ${Math.abs(diff).toFixed(0)}% vs your daily avg</span>`;
+  }
+}
+
+function renderSpeedNow(M){
+  setBadge('srcSpeed',M.speedSrc);
+  $('spDown').textContent=(M.downNow!=null)?fmtG(M.downNow):'—';
+  $('spUp').textContent=(M.upNow!=null)?fmtG(M.upNow):'—';
+  $('spPlanLegend').textContent='Plan ('+M.ratedSpeed+')';
+  const note=$('speedNote');
+  if(note){
+    note.textContent=(M.speedSrc==='live'&&M.latestTest)
+      ? (M.speedTestCount+' test'+(M.speedTestCount===1?'':'s')+' · last '+relTime(M.latestTest.at))
+      : 'Mbps';
+  }
+}
+
+/* The Live 5G signal strip: current link + instantaneous throughput, straight
+   from the router. Only appears when the helper actually read a signal (ZLT /
+   5G ODU). Empty for wired FibreX or when there's no live data — never faked. */
+function renderSignal(M){
+  const el=$('signalStrip'); if(!el) return;
+  const s=M.signal;
+  if(!s){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='';
+  const chips=[];
+  if(s.networkType) chips.push(['Net',esc(s.networkType)]);
+  if(s.rxMbps!=null) chips.push(['Now ↓',esc(s.rxMbps)+' Mbps']);
+  if(s.txMbps!=null) chips.push(['Now ↑',esc(s.txMbps)+' Mbps']);
+  if(s.rsrp!=null) chips.push(['RSRP',esc(s.rsrp)+' dBm']);
+  if(s.rsrp5g!=null) chips.push(['5G',esc(s.rsrp5g)+' dBm']);
+  if(s.sinr!=null) chips.push(['SINR',esc(s.sinr)+' dB']);
+  if(s.rsrq!=null) chips.push(['RSRQ',esc(s.rsrq)+' dB']);
+  if(s.band) chips.push(['Band',esc(s.band)]);
+  el.innerHTML='<span class="src src-live" style="position:static;margin-right:2px">Live</span>'+
+    chips.map(c=>`<span class="sig-chip"><i>${c[0]}</i>${c[1]}</span>`).join('')+
+    (s.observedAt?`<span class="sig-chip"><i>read</i>${esc(relTime(s.observedAt))}</span>`:'');
+}
+
+function renderPlan(M){
+  setBadge('srcPlan',M.planSrc);
+  $('planName').textContent=M.planName;
+  $('planRenew').textContent=fmtDays(M.cycle.daysToRenew);
+  $('planPrice').textContent='₦'+fmtMoney(M.price,0);
+  $('planWallet').innerHTML='₦'+fmtMoney(M.wallet,2)+` <span class="tag ${M.autoRenew?'tag-on':'tag-off'}">${M.autoRenew?'auto-on':'auto-off'}</span>`;
+}
+
+function renderDevices(M){
+  // Live: real connected devices (names/IP/MAC) with NO per-device GB, because
+  // the router reports who's connected but not how much each one used.
+  if(M.devicesSrc==='live' && M.devicesList){
+    setBadge('srcDevices','live');
+    // Show only devices that are online RIGHT NOW — not every device the router
+    // has ever seen. (offline===false rows are dropped; the count already excludes them.)
+    const list=M.devicesList.filter(d=>d.online!==false);
+    $('devPanelNote').textContent=`${M.devicesOnline} online · connected now`;
+    if(!list.length){
+      $('deviceList').innerHTML=`<div class="log-empty" style="padding:18px">${M.devicesOnline} device(s) connected. Your router reported a count but not their names.</div>`;
+      return;
+    }
+    $('deviceList').innerHTML=list.map(d=>{
+      const name=esc(d.name||d.ip||d.mac||'Device');
+      const sub=esc([d.ip,d.mac].filter(Boolean).join(' · ')||'connected');
+      return `<div class="dev"><div class="ico">📶</div>
+        <div class="name"><b>${name}</b><span>${sub}</span></div></div>`;
+    }).join('')
+      + `<div class="dev-hint">Your router lists which devices are connected, but not how much data each one used — so there are no per-device GB figures here.</div>`;
+    return;
+  }
+  // Sample: demo devices with a per-device usage bar.
+  setBadge('srcDevices','sample');
+  $('devPanelNote').textContent=M.devicesWhyNot||`${M.devicesOnline} online · usage this cycle`;
+  const max=Math.max(...M.devices.map(d=>d.gb));
+  $('deviceList').innerHTML=
+    // The reason already sits in the panel header beside the Sample badge —
+    // don't say it twice. Here we only warn that the list is made up.
+    (M.devicesWhyNot?`<div class="dev-hint" style="margin:0 0 10px">The list below is an example, not your real devices.</div>`:'')
+    +M.devices.map(d=>`
+    <div class="dev"><div class="ico">${d.icon}</div>
+      <div class="name"><b>${esc(d.name)}</b><span>${esc(d.kind)}</span></div>
+      <div class="bar"><div class="track"><div class="fill" style="width:${(d.gb/max*100).toFixed(0)}%"></div></div></div>
+      <div class="gb">${d.gb.toFixed(1)} GB</div></div>`).join('');
+}
+
+function renderReliability(M){
+  setBadge('srcReliability',M.reliabilitySrc);
+  $('uptimePct').textContent=fmtG(M.uptime)+'%';
+  const live=M.reliabilitySrc==='live', rel=M.reliability;
+  const note=$('reliabilityNote');
+  if(note) note.textContent=(live&&rel)?('over '+fmtObserved(rel.observedSeconds)+' watched'):'this month';
+  if(live&&(!M.outages||M.outages.length===0)){
+    $('outageList').innerHTML=`<div class="outage outage-none"><span>No outages recorded ✓</span><span class="pill">steady</span></div>`;
+    return;
+  }
+  const cause=t=>t==='router-down'?'router / power':t==='service-down'?'service':'';
+  $('outageList').innerHTML=M.outages.map(o=>{
+    const c=live?cause(o.type):'';
+    const tag=c?` <span class="when">· ${esc(c)}</span>`:'';
+    const dur=o.ongoing?('ongoing · '+fmtDur(o.mins)):fmtDur(o.mins);
+    return `<div class="outage"><span>Outage <span class="when">${esc(o.when)}</span>${tag}</span><span class="pill${o.ongoing?' pill-live':''}">${dur}</span></div>`;
+  }).join('');
+}
+
+function renderUsageNote(M){
+  const el=$('usageTrend'), d=M.usageArr;
+  setBadge('srcUsage',M.usageSrc);
+  if(M.usageSrc==='live'){
+    /* Only days that were actually measured may go into this comparison, and
+       only measured days may be counted as "N days" — the 30-day window now
+       includes days nobody watched, and calling those "live days" would be
+       plainly untrue. */
+    const miss=M.usageMissing||d.map(()=>false);
+    const watched=d.filter((_,i)=>!miss[i]);
+    const mean=xs=>xs.length?sum(xs)/xs.length:null;
+    const last7=mean(d.slice(-7).filter((_,i)=>!miss.slice(-7)[i]));
+    const prev7=mean(d.slice(-14,-7).filter((_,i)=>!miss.slice(-14,-7)[i]));
+    const gaps=miss.filter(Boolean).length;
+    const gapNote=gaps?` · <span style="color:var(--muted)">${gaps} day${gaps===1?'':'s'} not recorded</span>`:'';
+    if(last7!=null&&prev7!=null){
+      const pct=((last7-prev7)/(prev7||1))*100;
+      el.innerHTML=`live · ${watched.length} day${watched.length===1?'':'s'} measured · `
+        +`<span style="color:${pct>=0?'var(--bad)':'var(--good)'}">${pct>=0?'▲':'▼'} ${Math.abs(pct).toFixed(0)}% vs last week</span>${gapNote}`;
+    }else{
+      el.innerHTML=`live · ${watched.length} day${watched.length===1?'':'s'} measured (builds up as the helper runs)${gapNote}`;
+    }
+  }else if(M.usageSrc==='manual'){
+    if(d.length>=14){
+      const last7=sum(d.slice(-7))/7, prev7=sum(d.slice(-14,-7))/7, pct=((last7-prev7)/(prev7||1))*100;
+      el.innerHTML=`${d.length} days logged · <span style="color:${pct>=0?'var(--bad)':'var(--good)'}">${pct>=0?'▲':'▼'} ${Math.abs(pct).toFixed(0)}% vs last week</span>`;
+    }else{
+      el.textContent=`${d.length} day${d.length===1?'':'s'} logged`;
+    }
+  }else{
+    const last7=sum(d.slice(-7))/7, prev7=sum(d.slice(-14,-7))/7, pct=((last7-prev7)/prev7)*100;
+    el.innerHTML=`last 30 days · <span style="color:${pct>=0?'var(--bad)':'var(--good)'}">${pct>=0?'▲':'▼'} ${Math.abs(pct).toFixed(0)}% vs last week</span>`;
+  }
+}
+
+function renderFooter(){
+  const manual=hasAnyManual();
+  const live=!!(LIVE.records&&LIVE.records.length);
+  $('footerDemo').innerHTML=live
+    ? '▲ Live usage is read from your router by the local helper; plan, price &amp; wallet are your saved details. Charts are drawn by the page itself and work with no internet.'
+    : (manual
+      ? '▲ Showing a mix of your saved details and sample numbers — charts are drawn by the page itself and work with no internet.'
+      : '▲ Prototype with sample numbers — the charts are drawn by the page itself, so they work with no internet.');
+  const el=$('routerLine');
+  if(LIVE.detectedModel){el.style.display='';el.textContent=`Router: ${LIVE.detectedModel}${LIVE.syncedAt?' — last read '+relTime(LIVE.syncedAt):''} (live via the helper).`;}
+  else if(LIVE.present){el.style.display='';el.textContent='Helper is running — click “Sync router” to read your box.';}
+  else{el.style.display='none';}
+}
+
+/* ================================================================
+   SVG CHART DRAWING (no libraries)
+   ================================================================ */
+function geom(el){const w=Math.max(240,el.clientWidth||600),h=Math.max(120,el.clientHeight||200);
+  return {w,h,pl:38,pr:14,pt:14,pb:24,pw:w-52,ph:h-38};}
+function yGrid(g,ymax,ticks,fmt){let s='';for(let i=0;i<=ticks;i++){const v=ymax*i/ticks,y=g.pt+g.ph*(1-i/ticks);
+  s+=`<line x1="${g.pl}" y1="${y.toFixed(1)}" x2="${g.w-g.pr}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.06)"/>`;
+  s+=`<text x="${g.pl-8}" y="${(y+3).toFixed(1)}" fill="#8A8A93" font-size="10" text-anchor="end" font-family="'IBM Plex Mono',monospace">${fmt(v)}</text>`;}return s;}
+function wrapSvg(g,inner){return `<svg viewBox="0 0 ${g.w} ${g.h}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">${inner}</svg>`;}
+
+function renderUsage(){
+  const el=$('usageChart');if(!el||!MODEL)return;const d=MODEL.usageArr,n=d.length,g=geom(el);
+  if(!n){el.innerHTML='';return;}
+  const miss=MODEL.usageMissing||[], min=MODEL.usageMinimum||[], est=MODEL.usageEstimate||[];
+  const ymax=Math.max(...d,0.1)*1.18;const band=g.pw/n;
+  /* The 7-day trend line must not average unwatched days in as zeros — that
+     drags the line down and invents a quiet week that never happened. */
+  const roll=rolling(d.map((v,i)=>miss[i]?null:v),7);
+  let s=`<defs><linearGradient id="bg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFCC00"/><stop offset="1" stop-color="#FF9E1B" stop-opacity="0.45"/></linearGradient>`
+      +`<pattern id="gapHatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">`
+      +`<rect width="5" height="5" fill="#1C1C21"/><line x1="0" y1="0" x2="0" y2="5" stroke="#3A3A42" stroke-width="2"/></pattern></defs>`;
+  s+=yGrid(g,ymax,4,v=>Math.round(v));
+  d.forEach((v,i)=>{
+    const x=g.pl+i*band+band*0.18,bw=band*0.64;
+    if(miss[i]){
+      // Not measured. Draw a faint full-height hatch so the hole is visible
+      // rather than reading as a real day of zero usage.
+      s+=`<rect x="${x.toFixed(1)}" y="${g.pt.toFixed(1)}" width="${bw.toFixed(1)}" height="${g.ph.toFixed(1)}" rx="2" fill="url(#gapHatch)" opacity="0.55"/>`;
+      return;
+    }
+    const y=g.pt+g.ph*(1-v/ymax),bh=g.pt+g.ph-y;
+    // An estimated day is drawn hollow (guessed height), a measured day solid.
+    s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,bh).toFixed(1)}" rx="2" fill="${est[i]?'rgba(255,204,0,0.28)':'url(#bg1)'}" ${est[i]?'stroke="#FFCC00" stroke-opacity="0.7" stroke-dasharray="3 2"':''}/>`;
+    // A day we can only call a floor gets a dashed open cap, so it never looks exact.
+    if(min[i]) s+=`<rect x="${x.toFixed(1)}" y="${(y-5).toFixed(1)}" width="${bw.toFixed(1)}" height="3" rx="1.5" fill="none" stroke="#FFCC00" stroke-opacity="0.8" stroke-dasharray="2 2"/>`;
+    // An estimate gets a small "~" so it reads as a guess at a glance.
+    else if(est[i]) s+=`<text x="${(x+bw/2).toFixed(1)}" y="${(y-4).toFixed(1)}" fill="#FFCC00" fill-opacity="0.9" font-size="11" text-anchor="middle" font-family="'IBM Plex Mono',monospace">~</text>`;
+  });
+  const pts=roll.map((v,i)=>v==null?null:`${(g.pl+i*band+band/2).toFixed(1)},${(g.pt+g.ph*(1-v/ymax)).toFixed(1)}`);
+  // Break the line across gaps instead of drawing straight through them.
+  let run=[];
+  pts.forEach(p=>{ if(p){run.push(p);} else { if(run.length>1) s+=`<polyline points="${run.join(' ')}" fill="none" stroke="#ffffff" stroke-opacity="0.9" stroke-width="2"/>`; run=[]; } });
+  if(run.length>1) s+=`<polyline points="${run.join(' ')}" fill="none" stroke="#ffffff" stroke-opacity="0.9" stroke-width="2"/>`;
+  const idxs=n<=8?d.map((_,i)=>i):[0,Math.round(n*0.2),Math.round(n*0.4),Math.round(n*0.6),Math.round(n*0.8),n-1];
+  idxs.forEach(i=>{if(i>=0&&i<n){const lab=MODEL.usageDates?String(parseISO(MODEL.usageDates[i]).getDate()):(i+1);
+    s+=`<text x="${(g.pl+i*band+band/2).toFixed(1)}" y="${g.h-6}" fill="#8A8A93" font-size="10" text-anchor="middle" font-family="'IBM Plex Mono',monospace">${lab}</text>`;}});
+  el.innerHTML=wrapSvg(g,s);
+}
+
+function renderSpeed(){
+  const el=$('speedChart');if(!el||!MODEL)return;const dn=MODEL.down,up=MODEL.up,n=dn.length,g=geom(el);
+  const ymax=Math.max(60,MODEL.ratedSpeed*1.15,Math.max(...dn,0)*1.1,Math.max(...up,0)*1.1);const X=i=>g.pl+(n<=1?0:i*(g.pw/(n-1)));const Y=v=>g.pt+g.ph*(1-v/ymax);
+  let s=`<defs><linearGradient id="sg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFCC00" stop-opacity="0.30"/><stop offset="1" stop-color="#FFCC00" stop-opacity="0"/></linearGradient></defs>`;
+  s+=yGrid(g,ymax,3,v=>Math.round(v));
+  const py=Y(MODEL.ratedSpeed);
+  s+=`<line x1="${g.pl}" y1="${py.toFixed(1)}" x2="${g.w-g.pr}" y2="${py.toFixed(1)}" stroke="#34D399" stroke-opacity="0.75" stroke-width="1.3" stroke-dasharray="5 4"/>`;
+  let area=`M ${X(0).toFixed(1)} ${Y(dn[0]).toFixed(1)}`;dn.forEach((v,i)=>area+=` L ${X(i).toFixed(1)} ${Y(v).toFixed(1)}`);
+  area+=` L ${X(n-1).toFixed(1)} ${(g.pt+g.ph).toFixed(1)} L ${X(0).toFixed(1)} ${(g.pt+g.ph).toFixed(1)} Z`;
+  s+=`<path d="${area}" fill="url(#sg1)"/>`;
+  s+=`<polyline points="${dn.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')}" fill="none" stroke="#FFCC00" stroke-width="2"/>`;
+  s+=`<polyline points="${up.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')}" fill="none" stroke="#C9C9D2" stroke-width="1.6"/>`;
+  [0,7,14,21,29].forEach(i=>{if(i<n)s+=`<text x="${X(i).toFixed(1)}" y="${g.h-6}" fill="#8A8A93" font-size="10" text-anchor="middle" font-family="'IBM Plex Mono',monospace">${i+1}</text>`;});
+  el.innerHTML=wrapSvg(g,s);
+}
+
+let selMonth=SAMPLE.months.length-1;
+function renderMonthly(){
+  const el=$('monthlyChart');if(!el||!MODEL)return;const m=MODEL.months,n=m.length,g=geom(el);
+  const cap=MODEL.cap;
+  setBadge('srcMonthly',MODEL.monthsSrc||'sample');
+  /* Keep the month dropdown showing the REAL months (rebuild when they change). */
+  const sel=$('monthPick');
+  if(sel){
+    const opts=m.map((x,i)=>`<option value="${i}">${x.full}</option>`).join('');
+    if(sel.innerHTML!==opts) sel.innerHTML=opts;
+    if(selMonth>n-1) selMonth=n-1;
+    sel.value=selMonth;
+  }
+  const ymax=Math.max(cap||0,...m.map(x=>x.gb))*1.15;const band=g.pw/n;
+  let s=`<defs><linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFCC00"/><stop offset="1" stop-color="#FF9E1B" stop-opacity="0.5"/></linearGradient></defs>`;
+  s+=yGrid(g,ymax,3,v=>Math.round(v));
+  if(cap!=null){
+    const cy=g.pt+g.ph*(1-cap/ymax);
+    s+=`<line x1="${g.pl}" y1="${cy.toFixed(1)}" x2="${g.w-g.pr}" y2="${cy.toFixed(1)}" stroke="#FB6A6A" stroke-opacity="0.7" stroke-dasharray="5 4"/>`;
+    s+=`<text x="${g.w-g.pr}" y="${(cy-5).toFixed(1)}" fill="#FB6A6A" font-size="9.5" text-anchor="end" font-family="'IBM Plex Mono',monospace">cap ${fmtG(cap)}</text>`;
+  }
+  m.forEach((mm,i)=>{const x=g.pl+i*band+band*0.2,bw=band*0.6,y=g.pt+g.ph*(1-mm.gb/ymax),bh=g.pt+g.ph-y,sel=i===selMonth;
+    s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,bh).toFixed(1)}" rx="3" fill="${sel?'url(#bg2)':'rgba(255,204,0,0.26)'}"/>`;
+    s+=`<text x="${(x+bw/2).toFixed(1)}" y="${g.h-6}" fill="${sel?'#FAFAF7':'#8A8A93'}" font-size="10.5" text-anchor="middle" font-family="'IBM Plex Mono',monospace">${mm.m}</text>`;});
+  el.innerHTML=wrapSvg(g,s);
+  const mm=m[selMonth];$('monthTotal').textContent=fmtG(mm.gb);
+  if(cap==null){
+    $('monthNote').innerHTML=`${mm.full} · ${fmtG(mm.gb)} GB used`;
+  }else{
+    const over=mm.gb>cap;
+    $('monthNote').innerHTML=`${mm.full} · `+(over?`<span style="color:var(--bad)">${(mm.gb-cap).toFixed(0)} GB over your ${fmtG(cap)} GB cap</span>`:`<span style="color:var(--good)">${(cap-mm.gb).toFixed(0)} GB under your ${fmtG(cap)} GB cap</span>`);
+  }
+}
+
+function renderUptime(){
+  const el=$('uptimeRing');if(!el||!MODEL)return;const pct=MODEL.uptime,r=58,cx=75,cy=75,C=2*Math.PI*r,upArc=C*pct/100;
+  el.innerHTML=`<svg viewBox="0 0 150 150" width="150" height="150">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(251,106,106,0.8)" stroke-width="12"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#FFCC00" stroke-width="12" stroke-linecap="round" stroke-dasharray="${upArc.toFixed(1)} ${(C-upArc).toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"/>
+  </svg>`;
+}
+
+function drawAll(){renderUsage();renderSpeed();renderMonthly();renderUptime();}
+
+/* ---------- redraw the whole dashboard from current settings ---------- */
+function renderAll(){
+  MODEL=computeModel();
+  renderTopBar();
+  renderHero(MODEL);
+  renderKPIs(MODEL);
+  renderSpeedNow(MODEL);
+  renderSignal(MODEL);
+  renderPlan(MODEL);
+  renderDevices(MODEL);
+  renderReliability(MODEL);
+  renderUsageNote(MODEL);
+  renderFooter();
+  if(selMonth>MODEL.months.length-1)selMonth=MODEL.months.length-1;
+  drawAll();
+  updateSpeedTestUI();
+}
+
+/* ================================================================
+   SETTINGS DRAWER
+   ================================================================ */
+const drawer=$('settingsDrawer'), backdrop=$('drawerBackdrop');
+function openDrawer(){populateForm();renderLogList();drawer.classList.add('open');backdrop.classList.add('open');}
+function closeDrawer(){drawer.classList.remove('open');backdrop.classList.remove('open');}
+$('openSettings').addEventListener('click',openDrawer);
+$('drawerClose').addEventListener('click',closeDrawer);
+backdrop.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
+
+function setVal(id,v){const el=$(id);if(el)el.value=(v==null?'':v);}
+function trimOrU(v){v=(v||'').trim();return v||undefined;}
+function numOrU(v){if(v==null||String(v).trim()==='')return undefined;const n=parseFloat(v);return isFinite(n)?n:undefined;}
+
+function populateForm(){
+  const S=SETTINGS;
+  setVal('set_name',S.name);setVal('set_account',S.account);
+  setVal('set_planName',S.planName);setVal('set_price',S.price);
+  setVal('set_cap',S.cap);$('set_unlimited').checked=!!S.unlimited;
+  setVal('set_renewal',S.renewalDate);setVal('set_wallet',S.wallet);
+  $('set_autoRenew').checked=!!S.autoRenew;
+  // router connect panel (replaces the old address/model text boxes)
+  const gw=S.gateway||'192.168.100.1';
+  const gwEl=document.querySelector('input[name="router_gw"][value="'+gw+'"]');
+  if(gwEl){ gwEl.checked=true; }
+  else if($('router_gw_other')){            // a saved address that isn't one of the presets
+    $('router_gw_other').checked=true;
+    if($('router_gw_custom')) $('router_gw_custom').value=gw;
+  }
+  syncGatewayCustomUI();
+  if($('router_autosync')) $('router_autosync').checked=(S.autoSync!==false);
+  if($('router_remember')) $('router_remember').checked=!!(S.rememberPw||LIVE.savedCredential);
+  if($('router_pw')) $('router_pw').value=(S.rememberPw&&S.routerPw)?S.routerPw:'';
+  setSavedCredUI(LIVE.savedCredential);
+  updateConnectUI();
+  updateSpeedTestUI();
+  $('set_cap').disabled=$('set_unlimited').checked;
+  $('log_date').value=isoDate(startOfToday());
+}
+
+$('set_unlimited').addEventListener('change',e=>{$('set_cap').disabled=e.target.checked;});
+
+let noteTimer;
+function flashSaved(msg){
+  const el=$('saveNote');el.textContent=msg||'Saved ✓';el.classList.add('show');
+  clearTimeout(noteTimer);noteTimer=setTimeout(()=>el.classList.remove('show'),1800);
+}
+
+$('saveBtn').addEventListener('click',()=>{
+  const S=SETTINGS;
+  S.name=trimOrU($('set_name').value);
+  S.account=trimOrU($('set_account').value);
+  S.planName=trimOrU($('set_planName').value);
+  S.price=numOrU($('set_price').value);
+  S.unlimited=$('set_unlimited').checked;
+  S.cap=S.unlimited?undefined:numOrU($('set_cap').value);
+  S.renewalDate=trimOrU($('set_renewal').value);
+  S.wallet=numOrU($('set_wallet').value);
+  S.autoRenew=$('set_autoRenew').checked;
+  // router connect choices (the password is only kept if "remember" is ticked)
+  const gwPick=currentGateway();
+  if(gwPick) S.gateway=gwPick;
+  if($('router_autosync')) S.autoSync=$('router_autosync').checked;
+  S.rememberPw=!!($('router_remember')&&$('router_remember').checked);
+  if(S.rememberPw){ const pw=($('router_pw')&&$('router_pw').value)||''; if(pw) S.routerPw=pw; } else { delete S.routerPw; }
+  saveSettings(S);
+  renderAll();
+  flashSaved('Saved ✓');
+});
+
+$('resetBtn').addEventListener('click',()=>{
+  if(!confirm('Clear all your saved details and go back to the sample numbers?'))return;
+  SETTINGS={};
+  try{localStorage.removeItem(LS_KEY);}catch(e){}
+  populateForm();renderLogList();renderAll();
+  flashSaved('Cleared');
+});
+
+/* daily usage log */
+$('log_add').addEventListener('click',()=>{
+  const date=$('log_date').value, gb=parseFloat($('log_gb').value);
+  if(!date){alert('Please pick a date first.');return;}
+  if(!isFinite(gb)||gb<0){alert('Please type how many GB you used (a number, e.g. 9.8).');return;}
+  if(!Array.isArray(SETTINGS.usageLog))SETTINGS.usageLog=[];
+  const existing=SETTINGS.usageLog.find(e=>e.date===date);
+  if(existing)existing.gb=gb; else SETTINGS.usageLog.push({date,gb});
+  saveSettings(SETTINGS);
+  $('log_gb').value='';
+  renderLogList();renderAll();flashSaved('Usage logged ✓');
+});
+
+function renderLogList(){
+  const wrap=$('logList');
+  const log=Array.isArray(SETTINGS.usageLog)?[...SETTINGS.usageLog].sort((a,b)=>a.date<b.date?1:-1):[];
+  if(!log.length){wrap.innerHTML='<div class="log-empty">No days logged yet. Add today\'s usage above.</div>';return;}
+  wrap.innerHTML=log.map(e=>`<div class="log-item"><span class="d">${e.date}</span><span class="g">${fmtG(e.gb)} GB</span><button type="button" data-d="${e.date}" title="Remove this day" aria-label="Remove">✕</button></div>`).join('');
+  wrap.querySelectorAll('button[data-d]').forEach(b=>b.addEventListener('click',()=>{
+    SETTINGS.usageLog=SETTINGS.usageLog.filter(e=>e.date!==b.dataset.d);
+    saveSettings(SETTINGS);renderLogList();renderAll();
+  }));
+}
+
+/* month picker */
+(function(){
+  const sel=$('monthPick');
+  sel.innerHTML=SAMPLE.months.map((m,i)=>`<option value="${i}">${m.full}</option>`).join('');
+  sel.value=selMonth;
+  sel.addEventListener('change',e=>{selMonth=+e.target.value;renderMonthly();});
+})();
+
+/* ---------- router connect: wire the buttons & inputs ---------- */
+$('syncBtn').addEventListener('click',syncRouter);
+$('openConnect').addEventListener('click',()=>{
+  openDrawer();
+  setTimeout(()=>{const fs=$('routerFieldset');if(fs)fs.scrollIntoView({behavior:'smooth',block:'start'});
+    const pw=$('router_pw');if(pw)pw.focus();},120);
+});
+$('router_pw_show').addEventListener('click',()=>{
+  const el=$('router_pw'),b=$('router_pw_show');
+  if(el.type==='password'){el.type='text';b.textContent='Hide';}else{el.type='password';b.textContent='Show';}
+});
+// Show the "type it myself" box only when Other is picked; focus it so they can type straight away.
+Array.prototype.forEach.call(document.querySelectorAll('input[name="router_gw"]'),r=>{
+  r.addEventListener('change',()=>{
+    syncGatewayCustomUI();
+    if(r.id==='router_gw_other'&&r.checked&&$('router_gw_custom')) $('router_gw_custom').focus();
+  });
+});
+$('router_remember').addEventListener('change',e=>{
+  if(!e.target.checked){delete SETTINGS.routerPw;SETTINGS.rememberPw=false;saveSettings(SETTINGS);}
+});
+if($('router_forget')) $('router_forget').addEventListener('click',async()=>{
+  try{ await fetch(HELPER_BASE+'/api/forget-password',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}); }
+  catch(e){ /* helper may be down; we still clear the browser side below */ }
+  // Reflect it everywhere: drop the browser copy too, untick, hide the row, and
+  // stop the live loop (the helper just forgot the password, so it can't read).
+  delete SETTINGS.routerPw; SETTINGS.rememberPw=false; saveSettings(SETTINGS);
+  const cb=$('router_remember'); if(cb) cb.checked=false;
+  setSavedCredUI(false);
+  LIVE.autoSync=false; LIVE.liveStreaming=false; stopFastLive(); updateConnectUI();
+  setSyncStatus('Saved password removed from this PC. Live updates stopped — click Sync when you want to resume.','ok');
+});
+$('router_pw').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();syncRouter();}});
+
+/* ---------- speed tests: cadence dropdown + "run now" button ---------- */
+function updateSpeedTestUI(){
+  const sel=$('speedFreq'); if(!sel) return;
+  // Prefer the cadence the helper has saved; else this browser's saved choice; else 6h.
+  let mins=(LIVE.speedTestCfg&&LIVE.speedTestCfg.intervalMinutes!=null)
+    ? Number(LIVE.speedTestCfg.intervalMinutes)
+    : (SETTINGS.speedTestMinutes!=null?Number(SETTINGS.speedTestMinutes):360);
+  if(![0,30,360,720,1440].includes(mins)) mins=360;
+  if(document.activeElement!==sel) sel.value=String(mins);
+  const badge=$('speedTestBadge');
+  const live=!!(MODEL&&MODEL.speedSrc==='live');
+  if(badge){ badge.classList.remove('src-sample','src-manual','src-live');
+    badge.classList.add(live?'src-live':'src-sample'); badge.textContent=live?'Live':'Sample'; }
+  const btn=$('speedRunBtn'); if(btn) btn.disabled=!LIVE.present;
+  const st=$('speedStatus');
+  if(st && !/ss-(ok|err|busy|warn)/.test(st.className)){
+    st.textContent=LIVE.present?'Ready. Press the button above to test your speed now.':'Start the helper to enable speed tests.';
+    st.className='sync-status';
+  }
+}
+
+$('speedFreq').addEventListener('change',async e=>{
+  const mins=Number(e.target.value)||0;
+  SETTINGS.speedTestMinutes=mins; saveSettings(SETTINGS);
+  if(!LIVE.present){ setStatusLine('speedStatus','Saved — this takes effect once the helper is running.','warn'); return; }
+  try{
+    const r=await fetch(HELPER_BASE+'/api/speedtest/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({intervalMinutes:mins})});
+    const d=await r.json(); if(!r.ok||d.error) throw new Error(d.error||('Helper error '+r.status));
+    LIVE.speedTestCfg={intervalMinutes:d.intervalMinutes};
+    setStatusLine('speedStatus', mins===0?'Automatic speed tests turned off.':('Automatic speed tests set: every '+describeMins(mins)+'.'),'ok');
+  }catch(err){ setStatusLine('speedStatus','Could not reach the helper to save that. Is it running?','err'); }
+});
+
+$('speedRunBtn').addEventListener('click',async ()=>{
+  if(!LIVE.present){ setStatusLine('speedStatus','The helper needs to be running to test your speed.','warn'); return; }
+  const btn=$('speedRunBtn'); btn.disabled=true;
+  setStatusLine('speedStatus','Running a speed test… this uses a little data and takes about 10–20 seconds.','busy');
+  try{
+    const r=await fetch(HELPER_BASE+'/api/speedtest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
+    const d=await r.json(); if(!r.ok||d.error) throw new Error(d.error||('Helper error '+r.status));
+    const res=d.result||{};
+    const dn=res.downMbps!=null?(res.downMbps+' Mbps down'):'download failed';
+    const up=res.upMbps!=null?(res.upMbps+' Mbps up'):'upload failed';
+    setStatusLine('speedStatus','Done ✓ '+dn+' · '+up,'ok');
+    await pullHistory();
+  }catch(err){
+    let m=(err&&err.message)||String(err);
+    if(/Failed to fetch|NetworkError|load failed|fetch/i.test(m)) m='Could not reach the helper. Is it running?';
+    setStatusLine('speedStatus','✕ '+m,'err');
+  }finally{ if($('speedRunBtn')) $('speedRunBtn').disabled=false; }
+});
+
+/* ---------- go ---------- */
+renderAll();
+detectHelper();
+/* When you switch back to this tab (or unlock the screen), grab a fresh reading
+   — but at most once a minute, to be gentle on the router. */
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState!=='visible'||!LIVE.present) return;
+  fastLiveTick();   // instant device/signal refresh (background tabs throttle timers)
+  if(!LIVE.autoSync) return;
+  const ageMs=LIVE.syncedAt?(Date.now()-new Date(LIVE.syncedAt).getTime()):Infinity;
+  if(ageMs>60000) refreshLive();
+});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(drawAll,160);});
+</script>
+</body>
+</html>

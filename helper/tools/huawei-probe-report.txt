@@ -1,0 +1,137 @@
+
+=========================================================
+  Huawei FibreX box — can it tell us your data usage?
+=========================================================
+
+Router: https://192.168.100.1:80  (your box serves its page here)
+
+Signing in as "root" ...
+Signed in. Reading pages (this only looks, it changes nothing) ...
+
+  200  /  (87609 bytes of page)
+  404 /html/index.asp
+  404 /html/ssmp/common/frame.asp
+  200  /html/ssmp/deviceinfo/deviceinfo.asp  (57374 bytes of page)
+  * /html/ssmp/deviceinfo/deviceinfo.asp — 1 counter-ish mention(s)
+  404 /html/ssmp/common/statusdeviceinfo.asp
+  404 /html/amp/wan/wan.asp
+  200  /html/bbsp/wan/wan.asp  (209866 bytes of page)
+  404 /html/ssmp/wan/wan.asp
+  404 /html/status/status_wan.asp
+  404 /html/status/wandetail.asp
+  404 /html/network/wan.asp
+  404 /html/ssmp/statistic/statistic.asp
+  404 /html/ssmp/traffic/traffic.asp
+  404 /html/ssmp/ethinfo/ethinfo.asp
+  404 /html/ssmp/opticinfo/opticinfo.asp
+  404 /html/ssmp/lanuser/lanuser.asp
+  404 /html/ssmp/userdevinfo/userdevinfo.asp
+  404 /html/ssmp/wlanbasic/wlanbasic.asp
+  404 /html/ssmp/lanportinfo/lanportinfo.asp
+  200  /login.asp  (87609 bytes of page)
+  404 /./wlansafemode.asp
+  200  /asp/GetRandCount.asp  (64 bytes of page)
+  404 /&CheckCodeErrFile=login.asp
+  403 /MdfPwdNormalNoLg.cgi
+  0   /MdfPwdAdminNoLg.cgi
+  403 /FrameModeSwitch.cgi
+  0   /html/ssmp/deviceinfo/../../../resource/common/InitForm.asp
+  404 /html/ssmp/deviceinfo/../../../resource/english/ampdes.html
+  200  /html/bbsp/common/wanipv6state.asp  (3409 bytes of page)
+  200  /html/bbsp/common/wan_check.asp  (64546 bytes of page)
+  200  /html/bbsp/common/wan_list_info.asp  (46233 bytes of page)
+  * /html/bbsp/common/wan_list_info.asp — 6 counter-ish mention(s)
+  200  /html/bbsp/common/wan_list.asp  (74157 bytes of page)
+  * /html/bbsp/common/wan_list.asp — 6 counter-ish mention(s)
+  200  /html/get_swm_status.asp  (9 bytes of page)
+  404 /html/ssmp/deviceinfo/html/ssmp/deviceinfo/deviceinfo.asp
+  404 /html/ssmp/deviceinfo/lteInfo.asp
+  404 /html/bbsp/common/get_wan_info_ap.asp
+  404 /html/ssmp/deviceinfo/../common/StartFileLoad.asp
+  403 /html/ssmp/deviceinfo/ccsadown.cgi
+  0   /html/bbsp/wan/../../../resource/english/ampdes.html
+  404 /html/bbsp/wan/../../../resource/common/InitForm.asp
+  404 /html/bbsp/wan/../common/managemode.asp
+  404 /html/bbsp/wan/../common/wandns.asp
+  404 /html/bbsp/wan/../common/wan_list_info.asp
+  404 /html/bbsp/wan/../../amp/common/wlan_list.asp
+  404 /html/bbsp/wan/../common/wan_pageparse.asp
+  404 /html/bbsp/wan/../common/wan_control.asp
+  404 /html/bbsp/wan/../common/wan_check.asp
+  200  /html/bbsp/wan/confirmwancfginfo.html  (2291 bytes of page)
+  200  /index.asp  (119118 bytes of page)
+  * /index.asp — 1 counter-ish mention(s)
+  404 /html/bbsp/wan/../common/wanipv6state.asp
+  404 /html/bbsp/wan/lteBandInfo.asp
+  404 /html/bbsp/wan/&RequestFile=html/bbsp/wan/wan.asp
+  404 /html/bbsp/wan/../common/getwanlist.asp
+  404 /html/bbsp/wan/../common/checkmodepwd.asp
+  404 /html/amp/ontauth/password.asp
+  200  /html/amp/ontauth/passwordcommon.asp  (55965 bytes of page)
+  * /html/amp/ontauth/passwordcommon.asp — 3 counter-ish mention(s)
+  403 /smartguide.cgi
+  0   /html/bbsp/wan/../../../index.asp
+  200  /html/amp/wlanbasic/guidewificfg.asp  (109361 bytes of page)
+  200  /html/ssmp/cfgguide/userguidecfgdone.asp  (14487 bytes of page)
+  404 /html/bbsp/lanservicecfg/lanservicecfg.asp
+  404 /html/ssmp/bss/guidebssinfo.asp
+  200  /html/bbsp/common/wan_list_cache_wanipv6.asp  (451 bytes of page)
+  200  /html/bbsp/common/get_wan_list_policyroute.asp  (44 bytes of page)
+  200  /html/bbsp/common/get_wan_list_ipversion.asp  (1 bytes of page)
+  200  /html/bbsp/common/get_wan_list_ispwlan.asp  (44 bytes of page)
+  200  /html/bbsp/common/get_wan_list_wlaninfo.asp  (242 bytes of page)
+  200  /html/bbsp/common/wan_list_cache_wan.asp  (830 bytes of page)
+  200  /html/bbsp/common/get_wan_list_ipdslite.asp  (44 bytes of page)
+  200  /html/bbsp/common/get_wan_list_pppdslite.asp  (160 bytes of page)
+
+=========================================================
+  WHAT WE FOUND
+=========================================================
+Pages the router let us read: 23
+Pages mentioning bytes/traffic/statistics: 5
+...of those, pages with an actual big number: 0
+
+MIXED. Pages mention traffic or statistics, but none showed a big
+running total. That often means the numbers arrive separately after
+the page opens, so a reader would need a closer look.
+
+  /html/ssmp/deviceinfo/deviceinfo.asp
+      "byte" -> mentById('td7_2').innerHTML = ''; } } } function GetIMEI() { if(CfgMode.toUpperCase() == 'BYTEL') { document.getElementById('td17_2Colleft')
+  /html/bbsp/common/wan_list_info.asp
+      "byte" -> s.X_HW_IPoEPassword= ""; this.IPv4EnableMulticast= "1"; this.X_HW_DscpToPbitTbl= ""; this.BytesSent = ""; this.BytesReceived = ""; this.Pack
+      "byte" -> ""; this.IPv4EnableMulticast= "1"; this.X_HW_DscpToPbitTbl= ""; this.BytesSent = ""; this.BytesReceived = ""; this.PacketsSent = ""; this.Pa
+  /html/bbsp/common/wan_list.asp
+      "byte" -> h; j++) { if (WanStats[i].domain.indexOf(WanList[j].domain) < 0) { continue; } WanList[j].BytesSent = WanStats[i].BytesSent; WanList[j].Byte
+      "byte" -> ].domain.indexOf(WanList[j].domain) < 0) { continue; } WanList[j].BytesSent = WanStats[i].BytesSent; WanList[j].BytesReceived = WanStats[i].
+  /index.asp
+      "flow" -> "100%" height="100%" marginheight="0" marginwidth="0" class="AspWidth" scrolling="no" overflow="hidden" style="z-index:301;position: relativ
+  /html/amp/ontauth/passwordcommon.asp
+      "byte" -> ','amp_auth_attention_content','amp_pass_word','amp_psk_note','amp_registerid_note'); var BytelFlag = '0'; var TelMexFlag = '0'; var fttrFla
+      "byte" -> { top.Passwordmode = 0; } if('1' == hexPwdDefualtFlag) { top.Passwordmode = 1; } if(1 == BytelFlag) { top.Passwordmode = 1; } if (stDevinfo 
+
+Every page we could read:
+  /
+  /html/ssmp/deviceinfo/deviceinfo.asp
+  /html/bbsp/wan/wan.asp
+  /login.asp
+  /asp/GetRandCount.asp
+  /html/bbsp/common/wanipv6state.asp
+  /html/bbsp/common/wan_check.asp
+  /html/bbsp/common/wan_list_info.asp
+  /html/bbsp/common/wan_list.asp
+  /html/get_swm_status.asp
+  /html/bbsp/wan/confirmwancfginfo.html
+  /index.asp
+  /html/amp/ontauth/passwordcommon.asp
+  /html/amp/wlanbasic/guidewificfg.asp
+  /html/ssmp/cfgguide/userguidecfgdone.asp
+  /html/bbsp/common/wan_list_cache_wanipv6.asp
+  /html/bbsp/common/get_wan_list_policyroute.asp
+  /html/bbsp/common/get_wan_list_ipversion.asp
+  /html/bbsp/common/get_wan_list_ispwlan.asp
+  /html/bbsp/common/get_wan_list_wlaninfo.asp
+  /html/bbsp/common/wan_list_cache_wan.asp
+  /html/bbsp/common/get_wan_list_ipdslite.asp
+  /html/bbsp/common/get_wan_list_pppdslite.asp
+
+Signed out of the router again.

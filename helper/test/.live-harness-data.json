@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "settings": {
+    "monthlyLimitGB": 1000,
+    "cycleStartDay": 1,
+    "isUnlimited": true,
+    "detectedModel": "MTN 5G ODU • ZLT X17U",
+    "signal": {
+      "networkType": "5G(NSA)",
+      "signalLevel": 4,
+      "rxMbps": 50,
+      "txMbps": 10,
+      "rsrp": -72,
+      "rsrp5g": -65,
+      "rsrq": -12,
+      "sinr": 15,
+      "band": "B7+B3",
+      "cellId": "6301153",
+      "enodebId": "405521",
+      "observedAt": "2026-08-25T21:37:57.658Z"
+    },
+    "devices": {
+      "count": 4,
+      "list": [
+        {
+          "name": "Pixel-7",
+          "mac": "A4:50:46:11:22:33",
+          "ip": "192.168.0.101"
+        },
+        {
+          "name": "MacBook-Air",
+          "mac": "F0:18:98:AA:BB:CC",
+          "ip": "192.168.0.102"
+        },
+        {
+          "name": "TV-D",
+          "mac": "3C:5A:B4:DD:EE:FF",
+          "ip": "192.168.0.103"
+        },
+        {
+          "name": "iPhone-15",
+          "mac": "11:22:33:44:55:66",
+          "ip": "192.168.0.104"
+        }
+      ],
+      "cmd": 223,
+      "observedAt": "2026-08-25T21:37:57.658Z"
+    },
+    "speedTests": [
+      {
+        "at": "2026-08-24T23:10:51.657Z",
+        "downMbps": 3.73,
+        "upMbps": 4.54,
+        "server": "Cloudflare",
+        "downBytes": 25000000,
+        "upBytes": 8000000
+      },
+      {
+        "at": "2026-08-25T05:10:51.647Z",
+        "downMbps": 4.36,
+        "upMbps": 4.44,
+        "server": "Cloudflare",
+        "downBytes": 25000000,
+        "upBytes": 8000000
+      },
+      {
+        "at": "2026-08-25T11:10:51.661Z",
+        "downMbps": 4.27,
+        "upMbps": 4.35,
+        "server": "Cloudflare",
+        "downBytes": 25000000,
+        "upBytes": 8000000
+      },
+      {
+        "at": "2026-08-25T17:10:51.662Z",
+        "downMbps": 2.05,
+        "upMbps": null,
+        "server": "Cloudflare",
+        "downBytes": 25000000,
+        "upBytes": 8000000
+      }
+    ],
+    "speedTestConfig": {
+      "intervalMinutes": 360
+    }
+  },
+  "sources": [
+    {
+      "id": "zlt-sms",
+      "label": "MTN 5G ODU • ZLT X17U",
+      "kind": "router-sms",
+      "model": "ZLT X17U",
+      "routerIp": "127.0.0.1:9123",
+      "capabilities": {
+        "historical": true,
+        "dailyRecords": true,
+        "cumulativeCounters": false
+      },
+      "lastCollectedAt": "2026-08-25T21:37:57.657Z"
+    }
+  ],
+  "records": [
+    {
+      "date": "2026-08-19",
+      "usageBytes": 18468359373,
+      "downloadBytes": null,
+      "uploadBytes": null,
+      "usageGB": 17.2,
+      "isCorrected": false,
+      "sourceId": "zlt-sms",
+      "sourceType": "router-sms",
+      "sourceLabel": "MTN 5G ODU • ZLT X17U",
+      "confidence": "provider-reported",
+      "granularity": "day",
+      "observedAt": "2026-08-25T21:37:57.654Z",
+      "provenance": "mtn-sms",
+      "rawMessage": "Y'ello, your data usage for 19-08-2026 is 17.2 GB"
+    },
+    {
+      "date": "2026-08-20",
+      "usageBytes": 19756849562,
+      "downloadBytes": null,
+      "uploadBytes": null,
+      "usageGB": 18.4,
+      "isCorrected": false,
+      "sourceId": "zlt-sms",
+      "sourceType": "router-sms",
+      "sourceLabel": "MTN 5G ODU • ZLT X17U",
+      "confidence": "provider-reported",
+      "granularity": "day",
+      "observedAt": "2026-08-25T21:37:57.654Z",
+      "provenance": "mtn-sms",
+      "rawMessage": "Y'ello, your data usage for 20-08-2026 is 18.4 GB"
+    }
+  ],
+  "recordVariants": [
+    {
+      "date": "2026-08-19",
+      "usageBytes": 18468359373,
+      "downloadBytes": null,
+      "uploadBytes": null,
+      "usageGB": 17.2,
+      "isCorrected": false,
+      "sourceId": "zlt-sms",
+      "sourceType": "router-sms",
+      "sourceLabel": "MTN 5G ODU • ZLT X17U",
+      "confidence": "provider-reported",
+      "granularity": "day",
+      "observedAt": "2026-08-25T21:37:57.654Z",
+      "provenance": "mtn-sms",
+      "rawMessage": "Y'ello, your data usage for 19-08-2026 is 17.2 GB"
+    },
+    {
+      "date": "2026-08-20",
+      "usageBytes": 19756849562,
+      "downloadBytes": null,
+      "uploadBytes": null,
+      "usageGB": 18.4,
+      "isCorrected": false,
+      "sourceId": "zlt-sms",
+      "sourceType": "router-sms",
+      "sourceLabel": "MTN 5G ODU • ZLT X17U",
+      "confidence": "provider-reported",
+      "granularity": "day",
+      "observedAt": "2026-08-25T21:37:57.654Z",
+      "provenance": "mtn-sms",
+      "rawMessage": "Y'ello, your data usage for 20-08-2026 is 18.4 GB"
+    }
+  ],
+  "observations": [],
+  "events": [],
+  "accounting": {},
+  "lastSync": {
+    "success": true,
+    "sourceId": "zlt-sms",
+    "sourceType": "router-sms",
+    "sourceLabel": "MTN 5G ODU • ZLT X17U",
+    "routerIp": "127.0.0.1:9123",
+    "observedAt": "2026-08-25T21:37:57.658Z",
+    "status": "historical",
+    "recordsIngested": 2,
+    "observationId": null,
+    "error": null
+  },
+  "legacy": null
+}

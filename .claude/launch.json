@@ -1,0 +1,10 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "fibrex-dashboard-attach",
+      "port": 8947,
+      "url": "http://localhost:8947"
+    }
+  ]
+}

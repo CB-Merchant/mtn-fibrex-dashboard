@@ -1,0 +1,24 @@
+# ── Secrets & personal data — NEVER commit these ──────────────
+# Your router password (scrambled, but still a credential)
+helper/data/.router-credential
+# Your real usage history + device names / IPs / MAC addresses
+helper/data/
+# Any stray credential/env files
+*.env
+.env
+*.pem
+*.key
+
+# ── Local editor / tool state ─────────────────────────────────
+.claude/settings.local.json
+.playwright-mcp/
+
+# ── Screenshots of your own dashboard (show your IPs/MACs) ─────
+# Delete these lines if you WANT to publish the screenshots.
+*.png
+
+# ── OS / editor junk ──────────────────────────────────────────
+Thumbs.db
+Desktop.ini
+.DS_Store
+node_modules/
